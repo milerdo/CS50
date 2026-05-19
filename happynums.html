@@ -62,6 +62,8 @@ body{background:var(--bg);font-family:'Nunito',sans-serif;color:var(--tx);min-he
 .tlink{background:none;border:none;color:var(--s);font-family:'Nunito',sans-serif;font-size:0.88rem;font-weight:800;cursor:pointer;text-decoration:underline;display:block;text-align:center;margin-top:14px;}
 .xm{font-size:0.85rem;font-weight:800;text-align:center;margin-top:5px;min-height:1.1em;}
 .xm.ok{color:var(--ldk);}.xm.err{color:var(--cdk);}
+
+/* USER DASHBOARD CONTAINERS */
 .ubar{display:flex;align-items:center;gap:12px;background:var(--card);border:0.5px solid var(--bd);border-radius:14px;padding:12px 16px;margin-bottom:14px;}
 .av{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Fredoka One',cursive;font-size:0.95rem;flex-shrink:0;}
 .ubar-info{flex:1;min-width:0;}
@@ -74,6 +76,7 @@ body{background:var(--bg);font-family:'Nunito',sans-serif;color:var(--tx);min-he
 .stile{background:var(--card);border:0.5px solid var(--bd);border-radius:14px;padding:14px;text-align:center;}
 .stile .sv{font-family:'Fredoka One',cursive;font-size:1.6rem;color:var(--c);line-height:1;}
 .stile .sl{font-size:0.68rem;font-weight:800;color:var(--mt);margin-top:4px;text-transform:uppercase;letter-spacing:0.5px;}
+
 .dc{background:var(--card);border:0.5px solid var(--bd);border-radius:16px;padding:18px;margin-bottom:14px;}
 .dh{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
 .dt{font-size:1rem;font-weight:900;}
@@ -187,8 +190,8 @@ input[type=range]::-moz-range-thumb{width:28px;height:28px;border-radius:50%;bac
     <div class="pills">
       <span class="pill a">5 games/session</span>
       <span class="pill b">7 tries max</span>
-      <span class="pill c">3 shifts daily</span>
-      <span class="pill d">Jackpot +25000</span>
+      <span class="pill c">3 Draws Daily</span>
+      <span class="pill d">Jackpot +5000</span>
     </div>
 
     <nav class="hdr-nav" id="main-nav" style="display:none;">
@@ -220,22 +223,21 @@ input[type=range]::-moz-range-thumb{width:28px;height:28px;border-radius:50%;bac
   </div>
 
   <div id="app-wrap" style="display:none; flex:1; display:flex; flex-direction:column;">
-    <div class="pad" style="padding-bottom:0;">
-      <div class="ubar">
-        <div class="av" id="u-av"></div>
-        <div class="ubar-info">
-          <div class="uname" id="u-nm"></div>
-          <div class="urk" id="u-rk"></div>
-        </div>
-        <div class="uscore">
-          <div class="sl">All-time</div>
-          <div class="sv" id="u-sc">0</div>
-        </div>
-        <button class="btn ghost sm" onclick="logout()" style="margin-left:4px;">Exit</button>
-      </div>
-    </div>
-
     <div id="tab-home" class="screen on">
+      <div class="pad" style="padding-bottom:0;">
+        <div class="ubar">
+          <div class="av" id="u-av"></div>
+          <div class="ubar-info">
+            <div class="uname" id="u-nm"></div>
+            <div class="urk" id="u-rk"></div>
+          </div>
+          <div class="uscore">
+            <div class="sl">All-time</div>
+            <div class="sv" id="u-sc">0</div>
+          </div>
+          <button class="btn ghost sm" onclick="logout()" style="margin-left:4px;">Exit</button>
+        </div>
+      </div>
       <div class="pad" style="padding-top:6px;">
         <div class="g2">
           <div class="stile"><div class="sv" id="st-today">0/5</div><div class="sl" id="st-session-lbl">Round Games</div></div>
@@ -293,7 +295,7 @@ input[type=range]::-moz-range-thumb{width:28px;height:28px;border-radius:50%;bac
           <div class="sc-row"><span>6th try</span><span class="scv">+100 pts</span></div>
           <div class="sc-row"><span>7th try (Clutch)</span><span class="scv">+50 pts</span></div>
           <div class="sc-row"><span>Each individual guess</span><span class="scv">+1 pt</span></div>
-          <div class="sc-row" style="border-top:2px solid var(--glt);margin-top:4px;padding-top:10px;"><span style="font-weight:900;">Exact Draw Jackpot</span><span class="scv big">+25000 pts</span></div>
+          <div class="sc-row" style="border-top:2px solid var(--glt);margin-top:4px;padding-top:10px;"><span style="font-weight:900;">Exact Draw Jackpot</span><span class="scv big">+5000 pts</span></div>
         </div>
       </div>
     </div>
@@ -318,7 +320,7 @@ input[type=range]::-moz-range-thumb{width:28px;height:28px;border-radius:50%;bac
           <div class="rstep"><div class="rnum a">1</div><div class="rb"><h4>Play 5 Games per Shift</h4><p>HappyNums runs on 3 daily draw cycles. Qualify for each separate shift by finishing 5 brief game rounds.</p></div></div>
           <div class="rstep"><div class="rnum b">2</div><div class="rb"><h4>Adaptive Strategy Engine</h4><p>Type your guess or adjust the slider. When clues say higher or lower, the slider's physical boundaries shrink automatically to lock down your target path.</p></div></div>
           <div class="rstep"><div class="rnum c">3</div><div class="rb"><h4>Speed Yields Wealth</h4><p>Cracking the logic loop on Try 1 gives a massive +1000 pts bonus. Rewards cascade downwards to 50 pts on Try 7.</p></div></div>
-          <div class="rstep"><div class="rnum d">4</div><div class="rb"><h4>Unlock the Next Draw</h4><p>Submitting your 3-digit choice locks it into the next live pool window. Winning awards an absolute +25,000 point jackpot bounty!</p></div></div>
+          <div class="rstep"><div class="rnum d">4</div><div class="rb"><h4>Unlock the Next Draw</h4><p>Submitting your 3-digit choice locks it into the next live pool window. Winning awards an absolute +5,000 point jackpot bounty!</p></div></div>
         </div>
         <div class="card">
           <p class="slabel">FAQ</p>
@@ -414,7 +416,6 @@ function ensureDay(){
       }
     };
   }
-  // Backwards compatibility safety catch
   if(!u.days[d].draws) {
     u.days[d].draws = {d8:{pick:null,result:null,hit:false},d16:{pick:null,result:null,hit:false},d0:{pick:null,result:null,hit:false}};
   }
@@ -449,10 +450,13 @@ function sw(id,btn){
 function goHome(){sw('home',document.getElementById('nb-home'));renderDraws();updBar();}
 
 function updBar(){
-  const u=gu(),i=avi(u.username);
+  const u=gu(); if(!u) return;
+  const i=avi(u.username);
   const av=document.getElementById('u-av');
-  av.textContent=u.username.slice(0,2).toUpperCase();
-  av.style.background=AVC[i];av.style.color=AVT[i];
+  if(av) {
+    av.textContent=u.username.slice(0,2).toUpperCase();
+    av.style.background=AVC[i];av.style.color=AVT[i];
+  }
   document.getElementById('u-nm').textContent=u.username;
   document.getElementById('u-sc').textContent=u.alltime||0;
   const rk=getRank(u.alltime||0);
@@ -498,7 +502,7 @@ function renderDraws(){
       badge=`<span class="dbadge ${hit?'hit':'miss'}">${hit?'Jackpot!':'Done'}</span>`;
       numHtml=`<div class="dnum" id="dnum-display-${dr.id}">${String(pick).padStart(3,'0')}</div>`;
       subTxt='Winning number drop: '+String(result).padStart(3,'0');
-      resultHtml=hit?`<div class="jbanner"><span class="je">🎉</span><div class="jt">Jackpot Match! +25000 pts!</div></div>`:`<p style="font-size:0.74rem;font-weight:800;color:var(--mt);text-align:center;margin-top:8px;">0/3 Matched. Prepare for the subsequent shift!</p>`;
+      resultHtml=hit?`<div class="jbanner"><span class="je">🎉</span><div class="jt">Jackpot Match! +5000 pts!</div></div>`:`<p style="font-size:0.74rem;font-weight:800;color:var(--mt);text-align:center;margin-top:8px;">0/3 Matched. Prepare for the subsequent shift!</p>`;
     }
     html+=`<div class="dc"><div class="dh"><span class="dt"><i class="ti ${dr.icon}" aria-hidden="true" style="font-size:15px;vertical-align:-2px;margin-right:5px;"></i>${dr.label}</span>${badge}</div>${numHtml}<p class="dsub">${subTxt}</p>${inputHtml}${resultHtml}</div>`;
   });
@@ -515,7 +519,7 @@ function submitDraw(id){
   save();renderDraws();updBar();
 }
 
-/* ARCADE SLOT MACHINE TUMBLE REFACTORING */
+/* RE-BALANCED JACKPOT ACCUMULATION ENGINES (+5,000 PTS) WITH SPIN REVEAL */
 window.simulateDraw=function(id){
   const day=getDay(),u=gu();
   const d=day.draws[id];
@@ -537,7 +541,7 @@ window.simulateDraw=function(id){
       
       const drawn=Math.floor(Math.random()*1000);
       d.result=drawn;d.hit=(d.pick===drawn);
-      if(d.hit){addScore(25000);u.drawHits=(u.drawHits||0)+1;}
+      if(d.hit){addScore(5000);u.drawHits=(u.drawHits||0)+1;}
       
       save();renderDraws();updBar();
     }
@@ -679,7 +683,6 @@ function guess(){
     }
     updateSliderDOMConstraints();
     
-    // Automatically shift values safely into the new bounded zone center point
     const fallbackTargetValue = Math.floor((currentMinBound + currentMaxBound) / 2);
     document.getElementById('slider').value = fallbackTargetValue;
     document.getElementById('num-typed').value = fallbackTargetValue;
