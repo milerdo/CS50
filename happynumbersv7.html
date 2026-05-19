@@ -1,0 +1,602 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --coral:#FF6060;--coral-lt:#fff0f0;--coral-dk:#8b2020;
+  --sky:#38AAFF;--sky-lt:#e6f4ff;--sky-dk:#0055aa;
+  --lime:#45C45A;--lime-lt:#eafaea;--lime-dk:#1a6b2a;
+  --sun:#FFB830;--sun-lt:#fff6e0;--sun-dk:#7a5000;
+  --grape:#8B74F0;--grape-lt:#f0eeff;--grape-dk:#3a2090;
+  --card:var(--color-background-primary,#fff);
+  --bg:var(--color-background-tertiary,#f5f5f0);
+  --text:var(--color-text-primary,#1a1a1a);
+  --muted:var(--color-text-secondary,#777);
+  --bdr:var(--color-border-tertiary,rgba(0,0,0,0.1));
+}
+body{background:var(--bg);font-family:'Nunito',sans-serif;color:var(--text);min-height:100vh;}
+.app{max-width:420px;margin:0 auto;padding:0 0 84px;}
+
+.hdr{background:var(--card);border-bottom:0.5px solid var(--bdr);padding:14px 18px 12px;text-align:center;}
+.hdr-logo{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:4px;}
+.logo-icon{width:44px;height:44px;border-radius:14px;background:var(--coral);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;}
+.logo-wm{font-family:'Fredoka One',cursive;font-size:1.85rem;color:var(--coral);line-height:1;}
+.logo-wm em{color:var(--sky);font-style:normal;}
+.hdr-tag{font-size:0.68rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.hdr-pills{display:flex;justify-content:center;gap:5px;margin-top:7px;flex-wrap:wrap;}
+.hpill{font-size:0.63rem;font-weight:800;padding:3px 9px;border-radius:99px;}
+.hpill.a{background:var(--coral-lt);color:var(--coral-dk);}
+.hpill.b{background:var(--sky-lt);color:var(--sky-dk);}
+.hpill.c{background:var(--grape-lt);color:var(--grape-dk);}
+.hpill.d{background:var(--sun-lt);color:var(--sun-dk);}
+
+.nav{background:var(--card);border-top:0.5px solid var(--bdr);display:flex;padding:8px 6px 12px;gap:3px;width:100%;max-width:420px;margin:0 auto;}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;background:transparent;border:none;cursor:pointer;padding:5px 2px;border-radius:12px;color:var(--muted);font-family:'Nunito',sans-serif;transition:background .15s,color .15s;}
+.nb.on{background:var(--coral-lt);color:var(--coral);}
+.nb i{font-size:20px;}
+.nb span{font-size:0.58rem;font-weight:800;}
+
+.screen{display:none;}.screen.on{display:block;}
+.pad{padding:12px;}
+.card{background:var(--card);border:0.5px solid var(--bdr);border-radius:16px;padding:16px;margin-bottom:10px;}
+.slabel{font-size:0.63rem;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+
+.ff{margin-bottom:11px;}
+.ff label{display:block;font-size:0.68rem;font-weight:900;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px;}
+.ff input{width:100%;background:var(--bg);border:1.5px solid var(--bdr);border-radius:12px;padding:12px 14px;color:var(--text);font-family:'Nunito',sans-serif;font-size:0.95rem;font-weight:700;outline:none;}
+.ff input:focus{border-color:var(--sky);}
+.btn{display:block;width:100%;padding:14px;border:none;border-radius:13px;font-family:'Nunito',sans-serif;font-weight:900;font-size:0.96rem;cursor:pointer;margin-top:7px;transition:opacity .15s,transform .1s;}
+.btn:active{transform:scale(0.98);}.btn:hover{opacity:0.88;}
+.btn.coral{background:var(--coral);color:#fff;}
+.btn.lime{background:var(--lime);color:#fff;}
+.btn.grape{background:var(--grape);color:#fff;}
+.btn.ghost{background:transparent;border:1.5px solid var(--bdr);color:var(--muted);}
+.btn.sm{padding:8px 14px;font-size:0.8rem;width:auto;margin-top:0;}
+.tl{background:none;border:none;color:var(--sky);font-family:'Nunito',sans-serif;font-size:0.83rem;font-weight:800;cursor:pointer;text-decoration:underline;display:block;text-align:center;margin-top:11px;}
+.xmsg{font-size:0.8rem;font-weight:800;text-align:center;margin-top:5px;min-height:1.1em;}
+.xmsg.ok{color:var(--lime-dk);}.xmsg.err{color:var(--coral-dk);}
+
+.ubar{display:flex;align-items:center;gap:10px;background:var(--card);border:0.5px solid var(--bdr);border-radius:14px;padding:10px 12px;margin-bottom:10px;}
+.av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Fredoka One',cursive;font-size:0.88rem;flex-shrink:0;}
+.ubar-info{flex:1;min-width:0;}
+.ubar-name{font-weight:900;font-size:0.92rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ubar-rank{font-size:0.65rem;font-weight:800;background:var(--sun-lt);color:var(--sun-dk);padding:2px 8px;border-radius:99px;display:inline-block;margin-top:2px;}
+.score-block{text-align:right;flex-shrink:0;}
+.score-block .sv{font-family:'Fredoka One',cursive;font-size:1.25rem;color:var(--coral);line-height:1;}
+.score-block .sl{font-size:0.58rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+
+.stats-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:10px;}
+.stat-tile{background:var(--card);border:0.5px solid var(--bdr);border-radius:13px;padding:12px;text-align:center;}
+.stat-tile .sv{font-family:'Fredoka One',cursive;font-size:1.4rem;color:var(--coral);line-height:1;}
+.stat-tile .sl{font-size:0.62rem;font-weight:800;color:var(--muted);margin-top:3px;text-transform:uppercase;letter-spacing:0.5px;}
+
+.draw-card{background:var(--card);border:0.5px solid var(--bdr);border-radius:16px;padding:16px;margin-bottom:10px;}
+.draw-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.draw-title{font-size:0.92rem;font-weight:900;}
+.dbadge{font-size:0.65rem;font-weight:800;padding:3px 9px;border-radius:99px;}
+.dbadge.locked{background:var(--bdr);color:var(--muted);}
+.dbadge.open{background:var(--lime-lt);color:var(--lime-dk);}
+.dbadge.waiting{background:var(--sky-lt);color:var(--sky-dk);}
+.dbadge.hit{background:var(--lime-lt);color:var(--lime-dk);}
+.dbadge.miss{background:var(--bdr);color:var(--muted);}
+.draw-num{font-family:'Fredoka One',cursive;font-size:3rem;color:var(--grape);text-align:center;letter-spacing:4px;line-height:1;margin:4px 0 6px;}
+.draw-num.empty{color:var(--bdr);font-size:1.4rem;letter-spacing:0;font-family:'Nunito',sans-serif;font-weight:800;}
+.draw-sub{font-size:0.72rem;font-weight:800;color:var(--muted);text-align:center;margin-bottom:10px;}
+.draw-inp{display:flex;gap:7px;}
+.draw-inp input{flex:1;background:var(--bg);border:2px solid var(--bdr);border-radius:12px;padding:12px;font-family:'Fredoka One',cursive;font-size:1.5rem;text-align:center;color:var(--text);outline:none;transition:border-color .2s;}
+.draw-inp input:focus{border-color:var(--grape);}
+.draw-inp button{padding:0 14px;background:var(--grape);border:none;border-radius:12px;color:#fff;font-family:'Nunito',sans-serif;font-weight:900;font-size:0.87rem;cursor:pointer;white-space:nowrap;transition:opacity .15s;}
+.draw-inp button:hover{opacity:.88;}
+.jackpot-banner{background:var(--lime-lt);border:2px solid var(--lime);border-radius:12px;padding:12px;text-align:center;margin-top:8px;}
+.jackpot-banner .je{font-size:1.6rem;display:block;line-height:1;}
+.jackpot-banner .jt{font-family:'Fredoka One',cursive;font-size:1.1rem;color:var(--lime-dk);}
+
+.game-prog{display:flex;align-items:center;gap:6px;margin-bottom:10px;}
+.gp-label{font-size:0.68rem;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:1px;flex-shrink:0;}
+.gdots{display:flex;gap:5px;}
+.gdot{width:26px;height:26px;border-radius:50%;background:var(--bg);border:2px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-size:0.58rem;font-weight:900;color:var(--muted);}
+.gdot.win{background:var(--lime-lt);border-color:var(--lime);color:var(--lime-dk);}
+.gdot.loss{background:var(--coral-lt);border-color:var(--coral);color:var(--coral-dk);}
+.gdot.active{border-color:var(--sky);color:var(--sky-dk);background:var(--sky-lt);}
+
+.game-center{text-align:center;}
+.round-pill{display:inline-block;background:var(--sky-lt);color:var(--sky-dk);font-size:0.66rem;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;padding:3px 11px;border-radius:99px;margin-bottom:7px;}
+.ndp{font-family:'Fredoka One',cursive;font-size:4.8rem;line-height:1;letter-spacing:6px;margin:5px 0 10px;text-align:center;min-height:5rem;display:flex;align-items:center;justify-content:center;}
+.ndp.h{color:var(--bdr);}.ndp.r{color:var(--coral);animation:pop .3s ease;}
+@keyframes pop{0%{transform:scale(.75);}65%{transform:scale(1.1);}100%{transform:scale(1);}}
+.chips{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;min-height:30px;margin-bottom:9px;}
+.chip{font-size:0.72rem;font-weight:900;padding:4px 11px;border-radius:99px;}
+.chip.hot{background:var(--coral-lt);color:var(--coral-dk);}
+.chip.warm{background:var(--sun-lt);color:var(--sun-dk);}
+.chip.cold{background:var(--sky-lt);color:var(--sky-dk);}
+.chip.dir{background:var(--lime-lt);color:var(--lime-dk);}
+.gi-row{display:flex;gap:8px;margin-bottom:7px;}
+.gi-row input{flex:1;background:var(--bg);border:2px solid var(--bdr);border-radius:12px;padding:13px 8px;font-family:'Fredoka One',cursive;font-size:1.7rem;text-align:center;color:var(--text);outline:none;transition:border-color .2s;min-width:0;}
+.gi-row input:focus{border-color:var(--coral);}
+.gi-row button{padding:0 16px;background:var(--coral);border:none;border-radius:12px;color:#fff;font-family:'Nunito',sans-serif;font-weight:900;font-size:0.9rem;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:opacity .15s,transform .1s;}
+.gi-row button:active{transform:scale(.97);}
+.tdots{display:flex;justify-content:center;gap:5px;margin-bottom:5px;flex-wrap:wrap;}
+.tdot{width:36px;height:36px;border-radius:50%;background:var(--bg);border:2px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-size:0.56rem;font-weight:900;color:var(--muted);}
+.tdot.hot{background:var(--coral-lt);border-color:var(--coral);color:var(--coral-dk);}
+.tdot.warm{background:var(--sun-lt);border-color:var(--sun);color:var(--sun-dk);}
+.tdot.cold{background:var(--sky-lt);border-color:var(--sky);color:var(--sky-dk);}
+.tdot.win{background:var(--lime-lt);border-color:var(--lime);color:var(--lime-dk);}
+.gmsg{font-size:0.83rem;font-weight:900;text-align:center;min-height:1.1em;margin:3px 0;}
+.res-box{border-radius:13px;padding:13px;margin:9px 0;text-align:center;}
+.res-box.win{background:var(--lime-lt);border:2px solid var(--lime);}
+.res-box.lose{background:var(--coral-lt);border:2px solid var(--coral);}
+.res-em{font-size:2rem;display:block;margin-bottom:2px;}
+.res-t{font-family:'Fredoka One',cursive;font-size:1.35rem;}
+.res-s{font-size:0.76rem;font-weight:800;color:var(--muted);margin-top:3px;}
+
+.lb-tabs{display:flex;gap:4px;margin-bottom:12px;background:var(--bg);border-radius:99px;padding:4px;}
+.lb-tab{flex:1;padding:7px 4px;background:transparent;border:none;border-radius:99px;color:var(--muted);font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:800;cursor:pointer;transition:all .15s;text-align:center;}
+.lb-tab.on{background:var(--card);color:var(--coral);}
+.lb-row{display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:0.5px solid var(--bdr);}
+.lb-row:last-child{border-bottom:none;}
+.lb-rn{font-family:'Fredoka One',cursive;font-size:1.1rem;width:28px;text-align:center;flex-shrink:0;}
+.lb-info{flex:1;min-width:0;}
+.lb-n{font-weight:900;font-size:0.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.lb-n.me{color:var(--coral);}
+.lb-sub{font-size:0.66rem;font-weight:800;color:var(--muted);}
+.lb-pts{font-family:'Fredoka One',cursive;font-size:1.05rem;color:var(--coral);flex-shrink:0;}
+
+.sc-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px dashed var(--bdr);font-size:0.85rem;font-weight:700;}
+.sc-row:last-child{border-bottom:none;}
+.sc-val{font-weight:900;color:var(--lime-dk);}
+.sc-val.big{color:var(--grape-dk);font-size:1rem;}
+.rule-step{display:flex;gap:12px;margin-bottom:14px;align-items:flex-start;}
+.rnum{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Fredoka One',cursive;font-size:1rem;flex-shrink:0;}
+.rnum.a{background:var(--coral-lt);color:var(--coral-dk);}
+.rnum.b{background:var(--sky-lt);color:var(--sky-dk);}
+.rnum.c{background:var(--lime-lt);color:var(--lime-dk);}
+.rnum.d{background:var(--sun-lt);color:var(--sun-dk);}
+.rnum.e{background:var(--grape-lt);color:var(--grape-dk);}
+.rb h4{font-size:0.9rem;font-weight:900;margin-bottom:2px;}
+.rb p{font-size:0.79rem;font-weight:700;color:var(--muted);line-height:1.5;}
+.faq{margin-bottom:11px;padding-bottom:11px;border-bottom:1px dashed var(--bdr);}
+.faq:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.faq h4{font-size:0.88rem;font-weight:900;margin-bottom:3px;}
+.faq p{font-size:0.79rem;font-weight:700;color:var(--muted);line-height:1.5;}
+.faq p b{color:var(--text);}
+.streak-pill{display:inline-flex;align-items:center;gap:5px;background:var(--sun-lt);border:1.5px solid var(--sun);border-radius:99px;padding:4px 12px;font-size:0.74rem;font-weight:900;color:var(--sun-dk);}
+</style>
+
+<h2 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">HappyNumbers — daily skill game with 6 tries, draw jackpot, and daily/weekly/all-time leaderboards</h2>
+<div class="app">
+  <header class="hdr">
+    <div class="hdr-logo">
+      <div class="logo-icon">🎯</div>
+      <div class="logo-wm">Happy<em>Numbers</em></div>
+    </div>
+    <p class="hdr-tag">Guess · Predict · Compete</p>
+    <div class="hdr-pills">
+      <span class="hpill a">5 daily games</span>
+      <span class="hpill b">6 tries</span>
+      <span class="hpill c">Noon & evening draw</span>
+      <span class="hpill d">Jackpot +1000 pts</span>
+    </div>
+  </header>
+
+  <div id="auth-wrap" style="padding:12px;">
+    <div class="card" id="lcard">
+      <p class="slabel">Welcome back!</p>
+      <div class="ff"><label>Username</label><input id="li-u" placeholder="your_username" autocomplete="off"/></div>
+      <div class="ff"><label>Password</label><input id="li-p" type="password" placeholder="••••••••"/></div>
+      <button class="btn coral" onclick="doLogin()">Let's play! <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
+      <p class="xmsg" id="li-m"></p>
+      <button class="tl" onclick="tog()">New here? Create a free account →</button>
+    </div>
+    <div class="card" id="rcard" style="display:none;">
+      <p class="slabel">Join for free!</p>
+      <div class="ff"><label>Username</label><input id="re-u" placeholder="something fun..." autocomplete="off"/></div>
+      <div class="ff"><label>Email</label><input id="re-e" placeholder="you@email.com"/></div>
+      <div class="ff"><label>Password</label><input id="re-p" type="password" placeholder="min. 6 characters"/></div>
+      <button class="btn lime" onclick="doReg()">Create account & play!</button>
+      <p class="xmsg" id="re-m"></p>
+      <button class="tl" onclick="tog()">← Already have an account</button>
+    </div>
+  </div>
+
+  <div id="app-wrap" style="display:none;">
+    <div class="pad" style="padding-bottom:0;">
+      <div class="ubar">
+        <div class="av" id="u-av"></div>
+        <div class="ubar-info">
+          <div class="ubar-name" id="u-nm"></div>
+          <div class="ubar-rank" id="u-rk"></div>
+        </div>
+        <div class="score-block">
+          <div class="sl">All-time</div>
+          <div class="sv" id="u-sc">0</div>
+        </div>
+        <button class="btn ghost sm" onclick="logout()" style="margin-left:4px;">Exit</button>
+      </div>
+    </div>
+
+    <div id="tab-home" class="screen on">
+      <div class="pad" style="padding-top:6px;">
+        <div class="stats-grid">
+          <div class="stat-tile"><div class="sv" id="st-today">0/5</div><div class="sl">Today's games</div></div>
+          <div class="stat-tile"><div class="sv" id="st-streak">0</div><div class="sl">Win streak</div></div>
+          <div class="stat-tile"><div class="sv" id="st-wins">0</div><div class="sl">Total wins</div></div>
+          <div class="stat-tile"><div class="sv" id="st-draws">0</div><div class="sl">Draw jackpots</div></div>
+        </div>
+        <div class="draw-card" id="dc-noon">
+          <div class="draw-header">
+            <span class="draw-title"><i class="ti ti-sun" aria-hidden="true" style="font-size:15px;vertical-align:-2px;margin-right:5px;color:var(--sun);"></i>Noon draw</span>
+            <span class="dbadge locked" id="db-noon">Locked</span>
+          </div>
+          <div class="draw-num empty" id="dn-num">Play 5 games to unlock</div>
+          <p class="draw-sub" id="dn-sub">Your pick will appear here</p>
+          <div class="draw-inp" id="dn-inp-wrap" style="display:none;">
+            <input type="number" id="dn-inp" min="0" max="999" placeholder="0–999" oninput="cl(this)"/>
+            <button onclick="submitDraw('noon')">Lock in!</button>
+          </div>
+          <div id="dn-result"></div>
+        </div>
+        <div class="draw-card" id="dc-eve">
+          <div class="draw-header">
+            <span class="draw-title"><i class="ti ti-moon" aria-hidden="true" style="font-size:15px;vertical-align:-2px;margin-right:5px;color:var(--grape);"></i>Evening draw</span>
+            <span class="dbadge locked" id="db-eve">Locked</span>
+          </div>
+          <div class="draw-num empty" id="de-num">Play 5 games to unlock</div>
+          <p class="draw-sub" id="de-sub">Your pick will appear here</p>
+          <div class="draw-inp" id="de-inp-wrap" style="display:none;">
+            <input type="number" id="de-inp" min="0" max="999" placeholder="0–999" oninput="cl(this)"/>
+            <button onclick="submitDraw('eve')">Lock in!</button>
+          </div>
+          <div id="de-result"></div>
+        </div>
+        <p style="font-size:0.7rem;font-weight:800;color:var(--muted);text-align:center;padding:4px 0 8px;">
+          <i class="ti ti-info-circle" aria-hidden="true" style="vertical-align:-1px;margin-right:3px;"></i>
+          Tap "Simulate draw" in console to test jackpot · <code style="font-size:0.68rem;">simulateDraw('noon')</code>
+        </p>
+      </div>
+    </div>
+
+    <div id="tab-play" class="screen">
+      <div class="pad" style="padding-top:6px;">
+        <div class="game-prog">
+          <span class="gp-label">Today</span>
+          <div class="gdots" id="gdots"></div>
+          <span style="font-size:0.68rem;font-weight:900;color:var(--muted);margin-left:auto;" id="gleft"></span>
+        </div>
+        <div class="card" id="game-card">
+          <div class="game-center">
+            <span class="round-pill">Game <span id="g-num">1</span> of 5</span>
+            <p style="font-size:0.7rem;font-weight:700;color:var(--muted);margin-bottom:2px;">Guess the hidden number · 0 to 999</p>
+            <div class="ndp h" id="ndp">???</div>
+            <div id="sk-area"></div>
+          </div>
+          <div class="chips" id="chips"></div>
+          <div class="gi-row">
+            <input type="number" id="gi" min="0" max="999" placeholder="???" oninput="cl(this)"/>
+            <button onclick="guess()">Guess!</button>
+          </div>
+          <div class="tdots" id="tdots"></div>
+          <p class="gmsg" id="gm"></p>
+          <div id="res"></div>
+        </div>
+        <div class="card" id="done-card" style="display:none;">
+          <p class="slabel">Session complete!</p>
+          <div id="sess-sum"></div>
+          <p style="font-size:0.78rem;font-weight:700;color:var(--muted);margin-top:10px;text-align:center;">Head to Home to submit your draw picks!</p>
+          <button class="btn grape" onclick="goHome()" style="margin-top:8px;"><i class="ti ti-home" aria-hidden="true" style="vertical-align:-2px;margin-right:4px;"></i>Go to draw picks</button>
+        </div>
+        <div class="card">
+          <p class="slabel">Scoring</p>
+          <div class="sc-row"><span>1st try</span><span class="sc-val">+500 pts</span></div>
+          <div class="sc-row"><span>2nd try</span><span class="sc-val">+200 pts</span></div>
+          <div class="sc-row"><span>3rd try</span><span class="sc-val">+100 pts</span></div>
+          <div class="sc-row"><span>4th try</span><span class="sc-val">+50 pts</span></div>
+          <div class="sc-row"><span>5th try</span><span class="sc-val">+20 pts</span></div>
+          <div class="sc-row"><span>6th try</span><span class="sc-val">+5 pts</span></div>
+          <div class="sc-row"><span>Each guess made</span><span class="sc-val">+1 pt</span></div>
+          <div class="sc-row" style="border-top:2px solid var(--grape-lt);margin-top:4px;padding-top:10px;"><span style="font-weight:900;">Draw jackpot</span><span class="sc-val big">+1000 pts</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-lb" class="screen">
+      <div class="pad" style="padding-top:6px;">
+        <div class="card">
+          <div class="lb-tabs">
+            <button class="lb-tab on" onclick="switchLB('daily',this)">Daily</button>
+            <button class="lb-tab" onclick="switchLB('weekly',this)">Weekly</button>
+            <button class="lb-tab" onclick="switchLB('alltime',this)">All-time</button>
+          </div>
+          <div id="lb-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-rules" class="screen">
+      <div class="pad" style="padding-top:6px;">
+        <div class="card">
+          <p class="slabel">How to play</p>
+          <div class="rule-step">
+            <div class="rnum a">1</div>
+            <div class="rb"><h4>Play 5 games a day</h4><p>Each day you get 5 rounds. Guess a hidden number between 0 and 999 using 6 tries. Hot/warm/cold clues + higher/lower after each guess.</p></div>
+          </div>
+          <div class="rule-step">
+            <div class="rnum b">2</div>
+            <div class="rb"><h4>Guess early, earn more</h4><p>1st try = 500 pts. The reward drops steeply each try. A 6th-try win earns 5 pts. Every guess still earns +1 pt.</p></div>
+          </div>
+          <div class="rule-step">
+            <div class="rnum c">3</div>
+            <div class="rb"><h4>Unlock the daily draw</h4><p>After all 5 games, submit one lucky number (0–999) for the noon draw and one for the evening draw. Exact match = jackpot: +1000 pts!</p></div>
+          </div>
+          <div class="rule-step">
+            <div class="rnum d">4</div>
+            <div class="rb"><h4>Pick is locked, no changes</h4><p>Once you submit your draw number it's final. Commitment creates anticipation — that's the fun!</p></div>
+          </div>
+          <div class="rule-step" style="margin-bottom:0;">
+            <div class="rnum e">5</div>
+            <div class="rb"><h4>Three leaderboards</h4><p>Daily resets at midnight. Weekly resets Monday. All-time is forever. New players can top any board from day one.</p></div>
+          </div>
+        </div>
+        <div class="card">
+          <p class="slabel">FAQ</p>
+          <div class="faq"><h4>Best strategy?</h4><p>Binary search: start at <b>500</b>. Higher? Try <b>750</b>. Lower? Try <b>250</b>. Halve the range each time. With 6 tries you win ~50–60% using this method.</p></div>
+          <div class="faq"><h4>Draw odds?</h4><p>Exactly <b>1 in 1000 (0.1%)</b> per draw. Two draws a day = two chances. Pure luck — even beginners can hit it!</p></div>
+          <div class="faq"><h4>How do ranks work?</h4><p>Based on all-time score: <b>Newcomer → Guesser (100) → Sharp Eye (300) → Hot Shot (700) → Legend (1500) → Champion (3000).</b></p></div>
+          <div class="faq"><h4>Is it free?</h4><p>100% free. No ads, no paywalls. Just numbers and good vibes.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <button class="nb on" onclick="sw('home',this)" id="nb-home"><i class="ti ti-home" aria-hidden="true"></i><span>Home</span></button>
+      <button class="nb" onclick="sw('play',this);initPlay();" id="nb-play"><i class="ti ti-target" aria-hidden="true"></i><span>Play</span></button>
+      <button class="nb" onclick="sw('lb',this);renderLB('daily');" id="nb-lb"><i class="ti ti-trophy" aria-hidden="true"></i><span>Board</span></button>
+      <button class="nb" onclick="sw('rules',this)" id="nb-rules"><i class="ti ti-help-circle" aria-hidden="true"></i><span>Rules</span></button>
+    </nav>
+  </div>
+</div>
+
+<script>
+const BONUS=[500,200,100,50,20,5];
+const MAX_TRIES=6,MAX_GAMES=5;
+const AVC=['#FF6060','#38AAFF','#45C45A','#8B74F0','#FFB830','#FF8C42','#20C9C9','#F06292'];
+const AVT=['#fff','#fff','#fff','#fff','#7a5000','#fff','#fff','#fff'];
+const RANKS=[{m:0,l:'Newcomer',e:'🌱'},{m:100,l:'Guesser',e:'🎯'},{m:300,l:'Sharp Eye',e:'👁️'},{m:700,l:'Hot Shot',e:'🔥'},{m:1500,l:'Legend',e:'🌟'},{m:3000,l:'Champion',e:'👑'}];
+let U={},cu=null,gs=null;
+function today(){return new Date().toISOString().slice(0,10);}
+function weekKey(){const d=new Date();const day=d.getDay()||7;d.setDate(d.getDate()-day+1);return 'w'+d.toISOString().slice(0,10);}
+try{const d=localStorage.getItem('hn7');if(d)U=JSON.parse(d);}catch(e){}
+function save(){try{localStorage.setItem('hn7',JSON.stringify(U));}catch(e){}}
+function gu(){return U[cu];}
+function avi(n){let h=0;for(const c of n)h=(h*31+c.charCodeAt(0))&0xff;return h%AVC.length;}
+function getRank(s){let r=RANKS[0];for(const k of RANKS)if(s>=k.m)r=k;return r;}
+function sm(id,t,tp){const e=document.getElementById(id);if(!e)return;e.textContent=t;e.className='xmsg '+(tp||'');}
+function cl(el){const v=parseInt(el.value);if(!isNaN(v)){if(v<0)el.value=0;if(v>999)el.value=999;}}
+function tog(){const l=document.getElementById('lcard'),r=document.getElementById('rcard');l.style.display=l.style.display==='none'?'':'none';r.style.display=r.style.display==='none'?'':'none';}
+function doReg(){
+  const u=document.getElementById('re-u').value.trim();
+  const e=document.getElementById('re-e').value.trim();
+  const p=document.getElementById('re-p').value;
+  if(u.length<3){sm('re-m','Username needs 3+ chars','err');return;}
+  if(!e.includes('@')){sm('re-m','Valid email required','err');return;}
+  if(p.length<6){sm('re-m','Password needs 6+ chars','err');return;}
+  if(U[u.toLowerCase()]){sm('re-m','Username taken!','err');return;}
+  U[u.toLowerCase()]={username:u,email:e,password:p,alltime:0,daily:{},weekly:{},wins:0,drawHits:0,streak:0,best:0,days:{}};
+  save();sm('re-m','Done! Loading…','ok');
+  setTimeout(()=>{cu=u.toLowerCase();enterApp();},400);
+}
+function doLogin(){
+  const u=document.getElementById('li-u').value.trim().toLowerCase();
+  const p=document.getElementById('li-p').value;
+  if(!U[u]){sm('li-m','No account found','err');return;}
+  if(U[u].password!==p){sm('li-m','Wrong password!','err');return;}
+  cu=u;enterApp();
+}
+function logout(){cu=null;gs=null;document.getElementById('app-wrap').style.display='none';document.getElementById('auth-wrap').style.display='';}
+function enterApp(){
+  document.getElementById('auth-wrap').style.display='none';
+  document.getElementById('app-wrap').style.display='';
+  ensureDay();updBar();updateDraw();
+}
+function ensureDay(){
+  const u=gu(),d=today();
+  if(!u.days)u.days={};
+  if(!u.days[d])u.days[d]={games:[],noonPick:null,evePick:null,noonResult:null,eveResult:null,noonHit:false,eveHit:false};
+  if(!u.daily)u.daily={};if(!u.weekly)u.weekly={};
+  save();
+}
+function getDay(){return gu().days[today()];}
+function addScore(pts){
+  const u=gu(),d=today(),wk=weekKey();
+  u.alltime=(u.alltime||0)+pts;
+  u.daily[d]=(u.daily[d]||0)+pts;
+  u.weekly[wk]=(u.weekly[wk]||0)+pts;
+}
+function sw(id,btn){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('tab-'+id).classList.add('on');
+  if(btn)btn.classList.add('on');
+}
+function goHome(){sw('home',document.getElementById('nb-home'));updateDraw();}
+function updBar(){
+  const u=gu(),i=avi(u.username);
+  const av=document.getElementById('u-av');
+  av.textContent=u.username.slice(0,2).toUpperCase();
+  av.style.background=AVC[i];av.style.color=AVT[i];
+  document.getElementById('u-nm').textContent=u.username;
+  document.getElementById('u-sc').textContent=u.alltime||0;
+  const rk=getRank(u.alltime||0);
+  document.getElementById('u-rk').textContent=rk.e+' '+rk.l;
+  const day=getDay();
+  document.getElementById('st-today').textContent=day.games.length+'/5';
+  document.getElementById('st-streak').textContent=u.streak||0;
+  document.getElementById('st-wins').textContent=u.wins||0;
+  document.getElementById('st-draws').textContent=u.drawHits||0;
+}
+function updateDraw(){
+  const day=getDay(),unlocked=day.games.length>=MAX_GAMES;
+  [['noon','dn'],['eve','de']].forEach(([k,p])=>{
+    const pick=k==='noon'?day.noonPick:day.evePick;
+    const result=k==='noon'?day.noonResult:day.eveResult;
+    const hit=k==='noon'?day.noonHit:day.eveHit;
+    const badge=document.getElementById('db-'+k);
+    const numEl=document.getElementById(p+'-num');
+    const sub=document.getElementById(p+'-sub');
+    const inpWrap=document.getElementById(p+'-inp-wrap');
+    const res=document.getElementById(p+'-result');
+    res.innerHTML='';
+    if(!unlocked){
+      badge.textContent='Locked';badge.className='dbadge locked';
+      numEl.textContent='Play 5 games to unlock';numEl.className='draw-num empty';
+      sub.textContent='Your pick will appear here';inpWrap.style.display='none';
+    } else if(pick===null){
+      badge.textContent='Open!';badge.className='dbadge open';
+      numEl.textContent='Choose your number!';numEl.className='draw-num empty';
+      sub.textContent='Submit your lucky number below';inpWrap.style.display='flex';
+    } else if(result===null){
+      badge.textContent='Waiting…';badge.className='dbadge waiting';
+      numEl.textContent=String(pick).padStart(3,'0');numEl.className='draw-num';
+      sub.textContent='Locked in — draw coming soon!';inpWrap.style.display='none';
+    } else {
+      badge.textContent=hit?'Jackpot!':'Done';badge.className='dbadge '+(hit?'hit':'miss');
+      numEl.textContent=String(pick).padStart(3,'0');numEl.className='draw-num';
+      sub.textContent='Draw result: '+String(result).padStart(3,'0');inpWrap.style.display='none';
+      if(hit)res.innerHTML='<div class="jackpot-banner"><span class="je">🎉</span><div class="jt">Jackpot! +1000 pts!</div></div>';
+      else res.innerHTML='<p style="font-size:0.74rem;font-weight:800;color:var(--muted);text-align:center;margin-top:8px;">Not this time — try again tomorrow!</p>';
+    }
+  });
+}
+function submitDraw(k){
+  const day=getDay();
+  const v=parseInt(document.getElementById(k==='noon'?'dn-inp':'de-inp').value);
+  if(isNaN(v)||v<0||v>999)return;
+  if(k==='noon')day.noonPick=v;else day.evePick=v;
+  save();updateDraw();
+}
+window.simulateDraw=function(k){
+  const day=getDay(),u=gu();
+  const drawn=Math.floor(Math.random()*1000);
+  const pick=k==='noon'?day.noonPick:day.evePick;
+  if(pick===null){alert('Submit a pick first!');return;}
+  const hit=pick===drawn;
+  if(k==='noon'){day.noonResult=drawn;day.noonHit=hit;}else{day.eveResult=drawn;day.eveHit=hit;}
+  if(hit){addScore(1000);u.drawHits=(u.drawHits||0)+1;}
+  save();updateDraw();updBar();
+  console.log('Draw:',drawn,'Your pick:',pick,'Hit:',hit);
+};
+function initPlay(){
+  const day=getDay();
+  renderGdots();
+  if(day.games.length>=MAX_GAMES){
+    document.getElementById('game-card').style.display='none';
+    document.getElementById('done-card').style.display='';
+    renderSessSummary();return;
+  }
+  document.getElementById('game-card').style.display='';
+  document.getElementById('done-card').style.display='none';
+  if(!gs)newGame();
+}
+function newGame(){
+  const day=getDay();
+  gs={target:Math.floor(Math.random()*1000),tries:[],done:false};
+  document.getElementById('g-num').textContent=day.games.length+1;
+  document.getElementById('ndp').textContent='???';document.getElementById('ndp').className='ndp h';
+  document.getElementById('gi').value='';document.getElementById('gi').disabled=false;
+  document.getElementById('gm').textContent='';document.getElementById('res').innerHTML='';
+  document.getElementById('chips').innerHTML='';
+  renderTdots([]);renderStreak();
+}
+function renderStreak(){
+  const u=gu();
+  document.getElementById('sk-area').innerHTML=(u.streak>=2)?`<div style="text-align:center;margin-bottom:8px;"><span class="streak-pill"><i class="ti ti-flame" aria-hidden="true" style="font-size:14px;"></i> ${u.streak} win streak!</span></div>`:'';
+}
+function renderGdots(){
+  const day=getDay();let h='';
+  for(let i=0;i<MAX_GAMES;i++){
+    if(i<day.games.length){const g=day.games[i];h+=`<div class="gdot ${g.won?'win':'loss'}">${g.won?'✓':'✗'}</div>`;}
+    else if(i===day.games.length)h+=`<div class="gdot active">${i+1}</div>`;
+    else h+=`<div class="gdot">${i+1}</div>`;
+  }
+  document.getElementById('gdots').innerHTML=h;
+  const rem=MAX_GAMES-day.games.length;
+  document.getElementById('gleft').textContent=rem>0?rem+' left':'Done!';
+}
+function renderTdots(tries){
+  let h='';
+  for(let i=0;i<MAX_TRIES;i++){
+    if(i<tries.length){const t=tries[i];h+=`<div class="tdot ${t.w?'win':t.tp}">${t.g}</div>`;}
+    else h+=`<div class="tdot">${i+1}</div>`;
+  }
+  document.getElementById('tdots').innerHTML=h;
+}
+function tmp(g,t){const d=Math.abs(g-t);return d===0?'x':d<=50?'hot':d<=150?'warm':'cold';}
+function dir(g,t){return g<t?'go higher ↑':g>t?'go lower ↓':'spot on!';}
+function guess(){
+  if(!gs||gs.done)return;
+  const inp=document.getElementById('gi');
+  const v=parseInt(inp.value);
+  if(isNaN(v)||v<0||v>999){document.getElementById('gm').textContent='Enter 0–999!';return;}
+  const u=gu(),t=gs.target,tp=tmp(v,t),dh=dir(v,t),win=tp==='x';
+  gs.tries.push({g:v,tp:win?'win':tp,w:win});
+  addScore(1);renderTdots(gs.tries);inp.value='';
+  document.getElementById('chips').innerHTML=win?'':[`<span class="chip dir">${dh}</span>`,tp==='hot'?'<span class="chip hot">🔥 Hot!</span>':tp==='warm'?'<span class="chip warm">☀️ Warm</span>':'<span class="chip cold">🧊 Cold</span>'].join('');
+  if(win){
+    const n=gs.tries.length,b=BONUS[n-1]||5;
+    addScore(b);u.wins=(u.wins||0)+1;u.streak=(u.streak||0)+1;u.best=Math.max(u.streak,u.best||0);
+    gs.done=true;inp.disabled=true;
+    document.getElementById('ndp').textContent=String(t).padStart(3,'0');document.getElementById('ndp').className='ndp r';
+    document.getElementById('gm').textContent='';
+    const em=n===1?'🤯':n<=2?'🎉':'😄';
+    const tt=n===1?'Miracle!':n<=3?'Got it!':'Nice one!';
+    document.getElementById('res').innerHTML=`<div class="res-box win"><span class="res-em">${em}</span><div class="res-t">${tt}</div><div class="res-s">+${b+1} pts · ${n} ${n===1?'try':'tries'}</div></div><button class="btn lime" onclick="endGame(true,${b+1})" style="margin-top:0;">Next game →</button>`;
+  } else if(gs.tries.length>=MAX_TRIES){
+    u.streak=0;gs.done=true;inp.disabled=true;
+    document.getElementById('ndp').textContent=String(t).padStart(3,'0');document.getElementById('ndp').className='ndp r';
+    document.getElementById('gm').textContent='';
+    document.getElementById('res').innerHTML=`<div class="res-box lose"><span class="res-em">😅</span><div class="res-t">Missed!</div><div class="res-s">It was ${t} — try binary search next time!</div></div><button class="btn coral" onclick="endGame(false,0)" style="margin-top:0;">Next game →</button>`;
+  } else {
+    const rem=MAX_TRIES-gs.tries.length;
+    document.getElementById('gm').textContent=`${rem} ${rem===1?'try':'tries'} left · ${dh}`;
+  }
+  save();updBar();
+}
+function endGame(won,pts){
+  const day=getDay();
+  day.games.push({won,pts,target:gs.target});
+  gs=null;save();renderGdots();
+  if(day.games.length>=MAX_GAMES){
+    document.getElementById('game-card').style.display='none';
+    document.getElementById('done-card').style.display='';
+    renderSessSummary();
+  } else {newGame();}
+}
+function renderSessSummary(){
+  const day=getDay();
+  const wins=day.games.filter(g=>g.won).length;
+  const pts=day.games.reduce((a,g)=>a+g.pts,0);
+  document.getElementById('sess-sum').innerHTML=`<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;"><div class="stat-tile"><div class="sv">${wins}/5</div><div class="sl">Games won</div></div><div class="stat-tile"><div class="sv">+${pts}</div><div class="sl">Points earned</div></div></div>`;
+}
+function renderLB(period){
+  const all=Object.values(U).map(u=>{
+    let s=0;
+    if(period==='daily')s=(u.daily||{})[today()]||0;
+    else if(period==='weekly')s=(u.weekly||{})[weekKey()]||0;
+    else s=u.alltime||0;
+    return{n:u.username,s,w:u.wins||0,dh:u.drawHits||0,str:u.best||0,me:u.username.toLowerCase()===cu};
+  }).sort((a,b)=>b.s-a.s);
+  const tr=['🥇','🥈','🥉'];
+  document.getElementById('lb-list').innerHTML=all.length?all.map((p,i)=>{
+    const idx=avi(p.n),rk=getRank(p.s);
+    return `<div class="lb-row"><div class="lb-rn">${tr[i]||i+1}</div><div class="av" style="width:36px;height:36px;font-size:0.78rem;background:${AVC[idx]};color:${AVT[idx]};flex-shrink:0;">${p.n.slice(0,2).toUpperCase()}</div><div class="lb-info"><div class="lb-n${p.me?' me':''}">${p.n}${p.me?' (you)':''}</div><div class="lb-sub">${rk.e} ${rk.l} · ${p.w}W · ${p.dh} jackpots${p.str>1?' · 🔥'+p.str:''}</div></div><div class="lb-pts">${p.s}</div></div>`;
+  }).join(''):'<p style="font-size:0.85rem;font-weight:700;color:var(--muted);text-align:center;padding:16px 0;">No scores yet for this period.</p>';
+}
+function switchLB(period,btn){
+  document.querySelectorAll('.lb-tab').forEach(b=>b.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  renderLB(period);
+}
+document.getElementById('gi').addEventListener('keydown',e=>{if(e.key==='Enter')guess();});
+window.tog=tog;window.doReg=doReg;window.doLogin=doLogin;window.logout=logout;
+window.sw=sw;window.initPlay=initPlay;window.guess=guess;window.endGame=endGame;window.cl=cl;
+window.goHome=goHome;window.submitDraw=submitDraw;window.renderLB=renderLB;window.switchLB=switchLB;
+</script>
