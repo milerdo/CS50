@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HappyNums — Wordle Mode</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --c:#FF6060;--clt:#fff0f0;--cdk:#8b2020;
+  --s:#38AAFF;--slt:#e6f4ff;--sdk:#0055aa;
+  --l:#45C45A;--llt:#eafaea;--ldk:#1a6b2a;
+  --u:#FFB830;--ult:#fff6e0;--udk:#7a5000;
+  --g:#8B74F0;--glt:#f0eeff;--gdk:#3a2090;
+  --card:var(--color-background-primary,#fff);
+  --bg:var(--color-background-tertiary,#f5f5f0);
+  --tx:var(--color-text-primary,#1a1a1a);
+  --mt:var(--color-text-secondary,#777);
+  --bd:var(--color-border-tertiary,rgba(0,0,0,0.1));
+  /* Wordle Colors */
+  --w-green:#45C45A;
+  --w-yellow:#FFB830;
+  --w-grey:#a0a0a0;
+  --w-empty:#e0e0d8;
+}
+body{background:var(--bg);font-family:'Nunito',sans-serif;color:var(--tx);min-height:100vh;font-size:16px;}
+.app{width:100%;max-width:100%;margin:0 auto;padding:0;min-height:100vh;display:flex;flex-direction:column;}
+
+/* HEADER OVERHAUL */
+.hdr{background:var(--card);border-bottom:0.5px solid var(--bd);padding:18px 18px 14px;text-align:center;}
+.hdr-row{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:6px;}
+.logo-box{width:48px;height:48px;border-radius:14px;background:var(--c);display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;}
+.logo-txt{font-family:'Fredoka One',cursive;font-size:2.2rem;color:var(--c);line-height:1;}
+.logo-txt em{color:var(--s);font-style:normal;}
+.hdr-sub{font-size:0.78rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--mt);margin-bottom:12px;}
+
+.pills{display:flex;justify-content:center;gap:6px;margin-top:10px;flex-wrap:wrap;}
+.pill{font-size:0.68rem;font-weight:800;padding:4px 11px;border-radius:99px;}
+.pill.a{background:var(--clt);color:var(--cdk);}
+.pill.b{background:var(--slt);color:var(--sdk);}
+.pill.c{background:var(--glt);color:var(--gdk);}
+.pill.d{background:var(--ult);color:var(--udk);}
+
+.hdr-nav{display:flex;justify-content:center;gap:6px;margin-top:14px;background:var(--bg);padding:5px;border-radius:16px;border:0.5px solid var(--bd);}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:transparent;border:none;cursor:pointer;padding:12px 8px;border-radius:12px;color:var(--mt);font-family:'Nunito',sans-serif;}
+.nb.on{background:var(--c);color:#fff;}
+.nb span{font-size:0.82rem;font-weight:900;}
+
+.screen{display:none;flex:1;}
+.screen.on{display:block;}
+.pad{padding:16px;max-width:600px;margin:0 auto;width:100%;}
+.card{background:var(--card);border:0.5px solid var(--bd);border-radius:18px;padding:22px;margin-bottom:14px;}
+.slabel{font-size:0.72rem;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:var(--mt);margin-bottom:14px;}
+.ff{margin-bottom:16px;}
+.ff label{display:block;font-size:0.75rem;font-weight:900;color:var(--mt);margin-bottom:7px;text-transform:uppercase;}
+.ff input[type=text],.ff input[type=password]{width:100%;background:var(--bg);border:1.5px solid var(--bd);border-radius:14px;padding:16px;color:var(--tx);font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:700;outline:none;}
+.btn{display:block;width:100%;padding:16px;border:none;border-radius:14px;font-family:'Nunito',sans-serif;font-weight:900;font-size:1.05rem;cursor:pointer;margin-top:8px;}
+.btn.coral{background:var(--c);color:#fff;}
+.btn.lime{background:var(--l);color:#fff;}
+.btn.grape{background:var(--g);color:#fff;}
+.btn.ghost{background:transparent;border:1.5px solid var(--bd);color:var(--mt);}
+.btn.sm{padding:10px 16px;font-size:0.85rem;width:auto;margin-top:0;}
+.tlink{background:none;border:none;color:var(--s);font-family:'Nunito',sans-serif;font-size:0.92rem;font-weight:800;cursor:pointer;text-decoration:underline;display:block;text-align:center;margin-top:16px;}
+.xm{font-size:0.88rem;font-weight:800;text-align:center;margin-top:6px;min-height:1.1em;}
+.xm.ok{color:var(--ldk);}.xm.err{color:var(--cdk);}
+
+/* USER SYSTEM STATS */
+.ubar{display:flex;align-items:center;gap:12px;background:var(--card);border:0.5px solid var(--bd);border-radius:16px;padding:14px 18px;margin-bottom:14px;}
+.av{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Fredoka One',cursive;font-size:1rem;flex-shrink:0;}
+.ubar-info{flex:1;min-width:0;}
+.uname{font-weight:900;font-size:1.05rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.urk{font-size:0.72rem;font-weight:800;background:var(--ult);color:var(--udk);padding:3px 11px;border-radius:99px;display:inline-block;margin-top:3px;}
+.uscore{text-align:right;flex-shrink:0;}
+.uscore .sv{font-family:'Fredoka One',cursive;font-size:1.5rem;color:var(--c);line-height:1;}
+.uscore .sl{font-size:0.65rem;font-weight:800;color:var(--mt);text-transform:uppercase;letter-spacing:1px;}
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:14px;}
+.stile{background:var(--card);border:0.5px solid var(--bd);border-radius:16px;padding:16px;text-align:center;}
+.stile .sv{font-family:'Fredoka One',cursive;font-size:1.8rem;color:var(--c);line-height:1;}
+.stile .sl{font-size:0.7rem;font-weight:800;color:var(--mt);margin-top:5px;text-transform:uppercase;}
+
+/* DAILY LOTTERY DRAW CARD CONTAINER LAYOUT */
+.dc{background:var(--card);border:0.5px solid var(--bd);border-radius:16px;padding:18px;margin-bottom:14px;}
+.dh{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.dt{font-size:1rem;font-weight:900;}
+.dbadge{font-size:0.68rem;font-weight:800;padding:4px 11px;border-radius:99px;}
+.dbadge.locked{background:var(--bd);color:var(--mt);}
+.dbadge.open{background:var(--llt);color:var(--ldk);}
+.dbadge.waiting{background:var(--slt);color:var(--sdk);}
+.dbadge.hit{background:var(--llt);color:var(--ldk);}
+.dbadge.miss{color:var(--mt);}
+.dnum{font-family:'Fredoka One',cursive;font-size:3.2rem;color:var(--g);text-align:center;letter-spacing:4px;line-height:1;margin:6px 0 8px;}
+.dnum.empty{color:var(--bd);font-size:1.3rem;letter-spacing:0;font-family:'Nunito',sans-serif;font-weight:800;}
+.dsub{font-size:0.78rem;font-weight:800;color:var(--mt);text-align:center;margin-bottom:12px;}
+.dinp{display:flex;gap:8px;margin-bottom:10px;}
+.dinp input[type=number]{flex:1;background:var(--bg);border:2px solid var(--bd);border-radius:12px;padding:12px;font-family:'Fredoka One',cursive;font-size:1.5rem;text-align:center;color:var(--tx);outline:none;}
+.dinp button{padding:0 18px;background:var(--g);border:none;border-radius:12px;color:#fff;font-weight:900;cursor:pointer;}
+.gbar{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
+.gbar-lbl{font-size:0.72rem;font-weight:900;color:var(--mt);text-transform:uppercase;letter-spacing:1px;}
+.gdots{display:flex;gap:6px;}
+.gdot{width:28px;height:28px;border-radius:50%;background:var(--bg);border:2px solid var(--bd);display:flex;align-items:center;justify-content:center;font-size:0.62rem;font-weight:900;color:var(--mt);}
+.gdot.win{background:var(--llt);border-color:var(--l);color:var(--ldk);}
+.gdot.loss{background:var(--clt);border-color:var(--c);color:var(--cdk);}
+.gdot.active{border-color:var(--s);color:var(--sdk);background:var(--slt);}
+.game-center{text-align:center;display:flex;flex-direction:column;align-items:center;}
+.rpill{display:inline-block;background:var(--slt);color:var(--sdk);font-size:0.75rem;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;padding:5px 16px;border-radius:99px;margin-bottom:12px;}
+
+/* 🆕 WORDLE GAME BOARD GRID SYSTEMS */
+.wordle-grid {display:flex;flex-direction:column;gap:6px;align-items:center;margin:18px 0;}
+.wordle-row {display:flex;gap:6px;}
+.wordle-cell {width:52px;height:52px;border:2px solid var(--w-empty);border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'Fredoka One',cursive;font-size:1.6rem;color:#fff;background:transparent;transition:all 0.2s;}
+.wordle-cell.empty {color:var(--tx);background:var(--bg);border-color:var(--bd);}
+.wordle-cell.correct {background:var(--w-green);border-color:var(--w-green);}
+.wordle-cell.present {background:var(--w-yellow);border-color:var(--w-yellow);}
+.wordle-cell.wrong {background:var(--w-grey);border-color:var(--w-grey);}
+
+/* 🆕 WORDLE ADAPTIVE KEYBOARD / NUMBER PAD */
+.w-keyboard {display:grid;grid-template-columns:repeat(5,1fr);gap:8px;max-width:320px;margin:16px auto;}
+.key-btn {background:var(--bg);border:1.5px solid var(--bd);border-radius:12px;padding:14px 0;font-family:'Fredoka One',cursive;font-size:1.3rem;color:var(--tx);cursor:pointer;outline:none;user-select:none;text-align:center;}
+.key-btn:active {transform:scale(0.95);}
+.key-btn.correct {background:var(--w-green);color:#fff;border-color:var(--w-green);}
+.key-btn.present {background:var(--w-yellow);color:#fff;border-color:var(--w-yellow);}
+.key-btn.wrong {background:var(--w-grey);color:#fff;border-color:var(--w-grey);opacity:0.5;}
+.keyboard-actions {display:flex;gap:8px;max-width:320px;margin:0 auto 12px;}
+.action-btn {flex:1;padding:14px;font-family:'Nunito',sans-serif;font-weight:900;font-size:1rem;border-radius:12px;border:none;cursor:pointer;}
+.action-btn.del {background:var(--bd);color:var(--mt);}
+.action-btn.ent {background:var(--c);color:#fff;}
+
+.gmsg{font-size:0.92rem;font-weight:900;text-align:center;min-height:1.1em;margin:5px 0;}
+.res-box{border-radius:16px;padding:18px;margin:14px 0;text-align:center;}
+.res-box.win{background:var(--llt);border:2px solid var(--l);}
+.res-box.lose{background:var(--clt);border:2px solid var(--c);}
+.res-em{font-size:2.4rem;display:block;margin-bottom:3px;}
+.res-t{font-family:'Fredoka One',cursive;font-size:1.6rem;}
+.res-s{font-size:0.85rem;font-weight:800;color:var(--mt);margin-top:5px;}
+
+.lb-tabs{display:flex;gap:4px;margin-bottom:14px;background:var(--bg);border-radius:99px;padding:4px;}
+.lb-tab{flex:1;padding:8px 4px;background:transparent;border:none;border-radius:99px;color:var(--mt);font-family:'Nunito',sans-serif;font-size:0.78rem;font-weight:800;cursor:pointer;text-align:center;}
+.lb-tab.on{background:var(--card);color:var(--c);}
+.lbrow{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:0.5px solid var(--bd);}
+.lbrn{font-family:'Fredoka One',cursive;font-size:1.2rem;width:28px;text-align:center;}
+.lbinfo{flex:1;min-width:0;}
+.lbn{font-weight:900;font-size:0.95rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.lbn.me{color:var(--c);}
+.lbsub{font-size:0.7rem;font-weight:800;color:var(--mt);}
+.lbpts{font-family:'Fredoka One',cursive;font-size:1.15rem;color:var(--c);}
+.sc-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px dashed var(--bd);font-size:0.9rem;font-weight:700;}
+.scv{font-weight:900;color:var(--ldk);}
+.jbanner{background:var(--llt);border:2px solid var(--l);border-radius:12px;padding:14px;text-align:center;margin-top:10px;}
+.jbanner .jt{font-family:'Fredoka One',cursive;font-size:1.2rem;color:var(--ldk);}
+.streak-pill{display:inline-flex;align-items:center;gap:6px;background:var(--ult);border:1.5px solid var(--u);border-radius:99px;padding:5px 14px;font-size:0.8rem;font-weight:900;color:var(--udk);}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header class="hdr">
+    <div class="hdr-row">
+      <div class="logo-box">🧩</div>
+      <div class="logo-txt">Happy<em>Nums</em></div>
+    </div>
+    <p class="hdr-sub">Deduction · Logic · Wordle Mode</p>
+    <div class="pills">
+      <span class="pill a">5 games/session</span>
+      <span class="pill b">6 tries max</span>
+      <span class="pill c">3 Draws Daily</span>
+      <span class="pill d">Jackpot +5000</span>
+    </div>
+
+    <nav class="hdr-nav" id="main-nav" style="display:none;">
+      <button class="nb on" onclick="sw('home',this)" id="nb-home"><span>Home</span></button>
+      <button class="nb" onclick="sw('play',this);initPlay();" id="nb-play"><span>Play</span></button>
+      <button class="nb" onclick="sw('lb',this);renderLB('daily');" id="nb-lb"><span>Board</span></button>
+      <button class="nb" onclick="sw('rules',this)" id="nb-rules"><span>Rules</span></button>
+    </nav>
+  </header>
+
+  <div id="auth-wrap" class="pad">
+    <div class="card" id="lcard">
+      <p class="slabel">Welcome back!</p>
+      <div class="ff"><label>Username</label><input type="text" id="li-u" placeholder="your_username" autocomplete="off"/></div>
+      <div class="ff"><label>Password</label><input type="password" id="li-p" placeholder="••••••••"/></div>
+      <button class="btn coral" onclick="doLogin()">Let's play!</button>
+      <p class="xm" id="li-m"></p>
+      <button class="tlink" onclick="tog()">New here? Create a free account →</button>
+    </div>
+    <div class="card" id="rcard" style="display:none;">
+      <p class="slabel">Join for free!</p>
+      <div class="ff"><label>Username</label><input type="text" id="re-u" placeholder="something fun..." autocomplete="off"/></div>
+      <div class="ff"><label>Password</label><input type="password" id="re-p" placeholder="min. 6 characters"/></div>
+      <button class="btn lime" onclick="doReg()">Create account & play!</button>
+      <p class="xm" id="re-m"></p>
+      <button class="tlink" onclick="tog()">← Already have an account</button>
+    </div>
+  </div>
+
+  <div id="app-wrap" style="display:none; flex:1; flex-direction:column;">
+    <div id="tab-home" class="screen on">
+      <div class="pad" style="padding-bottom:0;">
+        <div class="ubar">
+          <div class="av" id="u-av"></div>
+          <div class="ubar-info">
+            <div class="uname" id="u-nm"></div>
+            <div class="urk" id="u-rk"></div>
+          </div>
+          <div class="uscore">
+            <div class="sl">All-time</div>
+            <div class="sv" id="u-sc">0</div>
+          </div>
+          <button class="btn ghost sm" onclick="logout()" style="margin-left:4px;">Exit</button>
+        </div>
+      </div>
+      <div class="pad" style="padding-top:6px;">
+        <div class="g2">
+          <div class="stile"><div class="sv" id="st-today">0/5</div><div class="sl" id="st-session-lbl">Round Games</div></div>
+          <div class="stile"><div class="sv" id="st-streak">0</div><div class="sl">Win streak</div></div>
+          <div class="stile"><div class="sv" id="st-wins">0</div><div class="sl">Total wins</div></div>
+          <div class="stile"><div class="sv" id="st-draws">0</div><div class="sl">Jackpots hit</div></div>
+        </div>
+        <div id="draws-area"></div>
+      </div>
+    </div>
+
+    <div id="tab-play" class="screen">
+      <div class="pad" style="padding-top:6px;">
+        <div class="gbar">
+          <span class="gbar-lbl" id="gbar-shift-lbl">Current Shift</span>
+          <div class="gdots" id="gdots"></div>
+          <span style="font-size:0.72rem;font-weight:900;color:var(--mt);margin-left:auto;" id="gleft"></span>
+        </div>
+        
+        <div class="card" id="game-card">
+          <div class="game-center">
+            <span class="rpill">Game <span id="g-num">1</span> of 5</span>
+            <div id="sk-area"></div>
+          </div>
+
+          <div class="wordle-grid" id="w-board"></div>
+
+          <div class="keyboard-actions" id="w-actions">
+            <button class="action-btn del" onclick="pressKey('DEL')">⌫ Delete</button>
+            <button class="action-btn ent" onclick="pressKey('ENTER')">Submit Guess</button>
+          </div>
+
+          <div class="w-keyboard" id="w-keys">
+            <button class="key-btn" onclick="pressKey('1')">1</button>
+            <button class="key-btn" onclick="pressKey('2')">2</button>
+            <button class="key-btn" onclick="pressKey('3')">3</button>
+            <button class="key-btn" onclick="pressKey('4')">4</button>
+            <button class="key-btn" onclick="pressKey('5')">5</button>
+            <button class="key-btn" onclick="pressKey('6')">6</button>
+            <button class="key-btn" onclick="pressKey('7')">7</button>
+            <button class="key-btn" onclick="pressKey('8')">8</button>
+            <button class="key-btn" onclick="pressKey('9')">9</button>
+            <button class="key-btn" onclick="pressKey('0')">0</button>
+          </div>
+
+          <p class="gmsg" id="gm"></p>
+          <div id="res"></div>
+        </div>
+
+        <div class="card" id="done-card" style="display:none;">
+          <p class="slabel">Shift Qualifier complete!</p>
+          <div id="sess-sum"></div>
+          <button class="btn grape" onclick="goHome()" style="margin-top:10px;">Go back & Enter Draw</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-lb" class="screen">
+      <div class="pad" style="padding-top:6px;">
+        <div class="card">
+          <div class="lb-tabs">
+            <button class="lb-tab on" onclick="switchLB('daily',this)">Daily</button>
+            <button class="lb-tab" onclick="switchLB('alltime',this)">All-time</button>
+          </div>
+          <div id="lb-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-rules" class="screen">
+      <div class="pad" style="padding-top:6px;">
+        <div class="card">
+          <p class="slabel">How clues work</p>
+          <p style="font-size:0.9rem;line-height:1.6;margin-bottom:12px;">HappyNums is now an advanced numbers codebreaking game. Guess the secret 3-digit combination:</p>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+            <div style="background:var(--w-green);color:#fff;width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:900;">🟩</div>
+            <span style="font-size:0.85rem;"><b>Green:</b> Correct digit in the exact right spot!</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+            <div style="background:var(--w-yellow);color:#fff;width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:900;">🟨</div>
+            <span style="font-size:0.85rem;"><b>Yellow:</b> Digit exists in answer, but different spot.</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="background:var(--w-grey);color:#fff;width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:900;">⬛</div>
+            <span style="font-size:0.85rem;"><b>Grey:</b> Digit is completely absent from the code.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const BONUS=[1000,500,250,100,50,25];
+const MAX_TRIES=6,MAX_GAMES=5;
+const DRAWS=[{id:'d8',label:'08:00 Morning Draw',icon:'ti-sun'},
+             {id:'d16',label:'16:00 Noon Draw',icon:'ti-cloud'},
+             {id:'d0',label:'00:00 Evening Draw',icon:'ti-moon'}];
+const AVC=['#FF6060','#38AAFF','#45C45A','#8B74F0','#FFB830'];
+const AVT=['#fff','#fff','#fff','#fff','#7a5000'];
+let U={},cu=null,gs=null,currentBuffer="";
+
+function getActiveShiftId() {
+  const hr = new Date().getHours();
+  if (hr >= 0 && hr < 8) return 'd8';
+  if (hr >= 8 && hr < 16) return 'd16';
+  return 'd0';
+}
+function today(){return new Date().toISOString().slice(0,10);}
+
+try{const d=localStorage.getItem('hn_w1');if(d)U=JSON.parse(d);}catch(e){}
+function save(){try{localStorage.setItem('hn_w1',JSON.stringify(U));}catch(e){}}
+function gu(){return U[cu];}
+function avi(n){return n.charCodeAt(0)%AVC.length;}
+
+function tog(){
+  const l=document.getElementById('lcard'),r=document.getElementById('rcard');
+  l.style.display=l.style.display==='none'?'':'none';
+  r.style.display=r.style.display==='none'?'':'none';
+}
+
+function doReg(){
+  const u=document.getElementById('re-u').value.trim();
+  const p=document.getElementById('re-p').value;
+  if(u.length<3){document.getElementById('re-m').textContent="Too short";return;}
+  U[u.toLowerCase()]={username:u,password:p,alltime:0,daily:{},wins:0,drawHits:0,streak:0,best:0,days:{}};
+  save();cu=u.toLowerCase();enterApp();
+}
+
+function doLogin(){
+  const u=document.getElementById('li-u').value.trim().toLowerCase();
+  const p=document.getElementById('li-p').value;
+  if(!U[u] || U[u].password!==p){document.getElementById('li-m').textContent="Error credentials";return;}
+  cu=u;enterApp();
+}
+
+function logout(){cu=null;location.reload();}
+
+function enterApp(){
+  document.getElementById('auth-wrap').style.display='none';
+  document.getElementById('app-wrap').style.display='block';
+  document.getElementById('main-nav').style.display='flex';
+  ensureDay();updBar();renderDraws();
+}
+
+function ensureDay(){
+  const u=gu(),d=today();
+  if(!u.days)u.days={};
+  if(!u.days[d]) {
+    u.days[d]={d8_games:[],d16_games:[],d0_games:[],draws:{d8:{pick:null,result:null,hit:false},d16:{pick:null,result:null,hit:false},d0:{pick:null,result:null,hit:false}}};
+  }
+}
+function getDay(){return gu().days[today()];}
+function getGamesArrayForShift(id){
+  const day=getDay();
+  if(id==='d8')return day.d8_games;if(id==='d16')return day.d16_games;return day.d0_games;
+}
+
+function sw(id,btn){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('tab-'+id).classList.add('on');
+  if(btn)btn.classList.add('on');
+}
+
+function goHome(){sw('home',document.getElementById('nb-home'));renderDraws();updBar();}
+
+function updBar(){
+  const u=gu();if(!u)return;
+  document.getElementById('u-nm').textContent=u.username;
+  document.getElementById('u-sc').textContent=u.alltime||0;
+  document.getElementById('u-av').textContent=u.username.slice(0,2).toUpperCase();
+  document.getElementById('u-av').style.background=AVC[avi(u.username)];
+  
+  const activeShift=getActiveShiftId();
+  document.getElementById('st-today').textContent=getGamesArrayForShift(activeShift).length+'/5';
+  document.getElementById('st-streak').textContent=u.streak||0;
+  document.getElementById('st-wins').textContent=u.wins||0;
+  document.getElementById('st-draws').textContent=u.drawHits||0;
+}
+
+function renderDraws(){
+  const day=getDay();let html='';
+  DRAWS.forEach(dr=>{
+    const d=day.draws[dr.id];
+    const gamesPlayed=getGamesArrayForShift(dr.id).length;
+    const unlocked=gamesPlayed>=MAX_GAMES;
+    let badge,numHtml,subTxt,inputHtml='';
+    
+    if(!unlocked){
+      badge=`<span class="dbadge locked">Locked</span>`;
+      numHtml=`<div class="dnum empty">Qualify (${gamesPlayed}/5 rounds)</div>`;
+      subTxt="Finish shift games to unlock ticket";
+    } else if(d.pick===null){
+      badge=`<span class="dbadge open">Open</span>`;
+      numHtml=`<div class="dnum empty">Ready</div>`;
+      subTxt="Choose a 3-digit target";
+      inputHtml=`<div class="dinp"><input type="number" id="inp-${dr.id}" placeholder="000-999"/><button onclick="submitDraw('${dr.id}')">Submit</button></div>`;
+    } else {
+      badge=`<span class="dbadge waiting">Active</span>`;
+      numHtml=`<div class="dnum">${String(d.pick).padStart(3,'0')}</div>`;
+      subTxt="Entered in system pool!";
+    }
+    html+=`<div class="dc"><div class="dh"><span>${dr.label}</span>${badge}</div>${numHtml}<p class="dsub">${subTxt}</p>${inputHtml}</div>`;
+  });
+  document.getElementById('draws-area').innerHTML=html;
+}
+
+function submitDraw(id){
+  const v=document.getElementById('inp-'+id).value;
+  if(v.length!==3){alert("Must be exactly 3 digits!");return;}
+  getDay().draws[id].pick=parseInt(v);save();renderDraws();
+}
+
+function initPlay(){
+  const arr=getGamesArrayForShift(getActiveShiftId());
+  renderGdots();
+  if(arr.length>=MAX_GAMES){
+    document.getElementById('game-card').style.display='none';
+    document.getElementById('done-card').style.display='block';
+    return;
+  }
+  document.getElementById('game-card').style.display='block';
+  document.getElementById('done-card').style.display='none';
+  if(!gs)newGame();
+}
+
+function newGame(){
+  // Generates a 3-digit string answer like "481"
+  const rawTarget = String(Math.floor(Math.random()*1000)).padStart(3,'0');
+  gs={target:rawTarget,tries:[],done:false};
+  currentBuffer="";
+  
+  document.getElementById('g-num').textContent=getGamesArrayForShift(getActiveShiftId()).length+1;
+  document.getElementById('gm').textContent="";
+  document.getElementById('res').innerHTML="";
+  
+  // Clear layout colors
+  document.querySelectorAll('.key-btn').forEach(k=>{k.className="key-btn";});
+  renderBoard();
+}
+
+function renderGdots(){
+  const arr=getGamesArrayForShift(getActiveShiftId());let h='';
+  for(let i=0;i<MAX_GAMES;i++){
+    if(i<arr.length) h+=`<div class="gdot ${arr[i].won?'win':'loss'}">✓</div>`;
+    else if(i===arr.length) h+=`<div class="gdot active">${i+1}</div>`;
+    else h+=`<div class="gdot">${i+1}</div>`;
+  }
+  document.getElementById('gdots').innerHTML=h;
+}
+
+function renderBoard(){
+  let html="";
+  for(let i=0;i<MAX_TRIES;i++){
+    html+=`<div class="wordle-row">`;
+    for(let j=0;j<3;j++){
+      let char="",cls="empty";
+      if(i<gs.tries.length){
+        char=gs.tries[i].guess[j];
+        cls=gs.tries[i].clues[j]; // correct, present, wrong
+      } else if(i===gs.tries.length && j<currentBuffer.length){
+        char=currentBuffer[j];
+      }
+      html+=`<div class="wordle-cell ${cls}">${char}</div>`;
+    }
+    html+=`</div>`;
+  }
+  document.getElementById('w-board').innerHTML=html;
+}
+
+function pressKey(k){
+  if(!gs || gs.done)return;
+  if(k==="DEL"){
+    currentBuffer=currentBuffer.slice(0,-1);
+    renderBoard();
+  } else if(k==="ENTER"){
+    if(currentBuffer.length!==3)return;
+    evaluateGuess(currentBuffer);
+  } else {
+    if(currentBuffer.length<3){
+      currentBuffer+=k;
+      renderBoard();
+    }
+  }
+}
+
+function evaluateGuess(gString){
+  const target=gs.target;
+  let clues=["wrong","wrong","wrong"];
+  let tTargetFlags=[false,false,false];
+  let gGuessFlags=[false,false,false];
+
+  // 1st Pass: Check for exact matches (Green)
+  for(let i=0;i<3;i++){
+    if(gString[i]===target[i]){
+      clues[i]="correct";
+      tTargetFlags[i]=true;
+      gGuessFlags[i]=true;
+    }
+  }
+
+  // 2nd Pass: Check for placement changes (Yellow)
+  for(let i=0;i<3;i++){
+    if(gGuessFlags[i])continue;
+    for(let j=0;j<3;j++){
+      if(!tTargetFlags[j] && gString[i]===target[j]){
+        clues[i]="present";
+        tTargetFlags[j]=true;
+        break;
+      }
+    }
+  }
+
+  gs.tries.push({guess:gString,clues:clues});
+  currentBuffer="";
+  
+  // Update keyboard element styles color map
+  for(let i=0;i<3;i++){
+    const d=gString[i];
+    const c=clues[i];
+    const keys=document.querySelectorAll('.w-keys button');
+    document.querySelectorAll('.key-btn').forEach(btn=>{
+      if(btn.textContent===d){
+        if(!btn.classList.contains('correct')){
+          btn.className=`key-btn ${c}`;
+        }
+      }
+    });
+  }
+
+  renderBoard();
+  const win = gString===target;
+  const u=gu();
+
+  if(win){
+    const pts=BONUS[gs.tries.length-1]||25;
+    u.alltime=(u.alltime||0)+pts;u.wins++;u.streak++;
+    gs.done=true;
+    document.getElementById('res').innerHTML=`<div class="res-box win"><span class="res-em">🎉</span><div class="res-t">Solved!</div><div class="res-s">+${pts} points accumulated!</div></div><button class="btn lime" onclick="endGame(true)">Next Game</button>`;
+  } else if(gs.tries.length>=MAX_TRIES){
+    u.streak=0;gs.done=true;
+    document.getElementById('res').innerHTML=`<div class="res-box lose"><span class="res-em">😅</span><div class="res-t">Out of Tries</div><div class="res-s">The secret code was ${target}</div></div><button class="btn coral" onclick="endGame(false)">Next Game</button>`;
+  }
+  save();updBar();
+}
+
+function endGame(won){
+  getGamesArrayForShift(getActiveShiftId()).push({won});
+  gs=null;save();initPlay();updBar();
+}
+
+function renderLB(){
+  const all=Object.values(U).sort((a,b)=>b.alltime-a.alltime);
+  document.getElementById('lb-list').innerHTML=all.map((p,i)=>`
+    <div class="lbrow">
+      <div class="lbrn">${i+1}</div>
+      <div class="lbinfo">
+        <div class="lbn">${p.username}</div>
+        <div class="lbsub">${p.wins} Wins</div>
+      </div>
+      <div class="lbpts">${p.alltime}</div>
+    </div>
+  `).join('');
+}
+
+window.tog=tog;window.doReg=doReg;window.doLogin=doLogin;window.logout=logout;
+window.sw=sw;window.initPlay=initPlay;window.pressKey=pressKey;window.endGame=endGame;
+window.goHome=goHome;window.submitDraw=submitDraw;window.renderLB=renderLB;
+</script>
+</body>
+</html>
