@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>HappyNums</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --c:#E8405A;--clt:#fff0f2;--cdk:#8b1a2a;
+  --s:#3B9EFF;--slt:#e6f2ff;--sdk:#0044aa;
+  --l:#2ECC71;--llt:#e8fdf2;--ldk:#1a6b3a;
+  --u:#F5A623;--ult:#fff8e6;--udk:#7a4a00;
+  --g:#7B5EA7;--glt:#f0ecff;--gdk:#3a1f80;
+  --night:#1a1a2e;--night2:#16213e;--nightcard:#0f3460;
+  --wg:#45C45A;--wy:#F5A623;--wgr:#6b7280;
+  --card:var(--color-background-primary,#fff);
+  --bg:var(--color-background-tertiary,#f7f6f2);
+  --tx:var(--color-text-primary,#1a1a1a);
+  --mt:var(--color-text-secondary,#6b7280);
+  --bd:var(--color-border-tertiary,rgba(0,0,0,0.09));
+}
+html,body{height:100%;}
+body{background:var(--bg);font-family:'Nunito',sans-serif;color:var(--tx);min-height:100vh;overscroll-behavior:none;}
+.app{width:100%;max-width:480px;margin:0 auto;padding:0;min-height:100vh;display:flex;flex-direction:column;}
+
+/* ── HEADER ── */
+.hdr{background:var(--card);border-bottom:1px solid var(--bd);padding:16px 20px 0;text-align:center;position:sticky;top:0;z-index:100;}
+.hdr-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:4px;}
+.logo-box{width:42px;height:42px;border-radius:12px;background:var(--c);display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;}
+.logo-txt{font-family:'Fredoka One',cursive;font-size:2rem;color:var(--c);line-height:1;}
+.logo-txt em{color:var(--s);font-style:normal;}
+.hdr-logout{background:none;border:1.5px solid var(--bd);border-radius:10px;padding:6px 14px;font-family:'Nunito',sans-serif;font-size:0.8rem;font-weight:800;color:var(--mt);cursor:pointer;position:absolute;right:16px;top:18px;}
+
+/* ── NAV ── */
+.hdr-nav{display:flex;justify-content:center;gap:0;margin:10px -20px 0;border-top:1px solid var(--bd);}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:transparent;border:none;cursor:pointer;padding:10px 4px;color:var(--mt);font-family:'Nunito',sans-serif;border-bottom:3px solid transparent;transition:color .15s,border-color .15s;}
+.nb.on{color:var(--c);border-bottom-color:var(--c);}
+.nb-icon{font-size:1.35rem;line-height:1;}
+.nb span{font-size:0.72rem;font-weight:900;letter-spacing:0.3px;}
+
+/* ── LAYOUT ── */
+.screen{display:none;}.screen.on{display:block;}
+.pad{padding:16px 16px 32px;max-width:480px;margin:0 auto;width:100%;}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:20px;margin-bottom:12px;}
+.slabel{font-size:0.65rem;font-weight:900;letter-spacing:2.5px;text-transform:uppercase;color:var(--mt);margin-bottom:12px;display:block;}
+
+/* ── AUTH ── */
+.ff{margin-bottom:14px;}
+.ff label{display:block;font-size:0.72rem;font-weight:900;color:var(--mt);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;}
+.ff input{width:100%;background:var(--bg);border:1.5px solid var(--bd);border-radius:12px;padding:14px 16px;color:var(--tx);font-family:'Nunito',sans-serif;font-size:1rem;font-weight:700;outline:none;transition:border-color .2s;}
+.ff input:focus{border-color:var(--s);}
+.btn{display:block;width:100%;padding:15px;border:none;border-radius:13px;font-family:'Nunito',sans-serif;font-weight:900;font-size:1rem;cursor:pointer;margin-top:8px;transition:opacity .15s,transform .1s;}
+.btn:active{transform:scale(0.98);}.btn:hover{opacity:0.9;}
+.btn.coral{background:var(--c);color:#fff;}
+.btn.lime{background:var(--l);color:#fff;}
+.btn.grape{background:var(--g);color:#fff;}
+.btn.sky{background:var(--s);color:#fff;}
+.btn.ghost{background:transparent;border:1.5px solid var(--bd);color:var(--mt);}
+.btn.sm{padding:9px 16px;font-size:0.83rem;width:auto;margin-top:0;}
+.tlink{background:none;border:none;color:var(--s);font-family:'Nunito',sans-serif;font-size:0.88rem;font-weight:800;cursor:pointer;text-decoration:underline;display:block;text-align:center;margin-top:14px;}
+.xm{font-size:0.85rem;font-weight:800;text-align:center;margin-top:5px;min-height:1.1em;}
+.xm.ok{color:var(--ldk);}.xm.err{color:var(--cdk);}
+
+/* ── USER BAR ── */
+.ubar{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:14px 16px;margin-bottom:12px;}
+.av{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Fredoka One',cursive;font-size:0.95rem;flex-shrink:0;color:#fff;}
+.ubar-info{flex:1;min-width:0;}
+.uname{font-weight:900;font-size:1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.urk{font-size:0.68rem;font-weight:800;background:var(--ult);color:var(--udk);padding:2px 10px;border-radius:99px;display:inline-block;margin-top:2px;}
+.uscore .sv{font-family:'Fredoka One',cursive;font-size:1.5rem;color:var(--c);line-height:1;}
+.uscore .sl{font-size:0.6rem;font-weight:800;color:var(--mt);text-transform:uppercase;letter-spacing:1px;text-align:right;}
+.g2{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:12px;}
+.stile{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px;text-align:center;}
+.stile .sv{font-family:'Fredoka One',cursive;font-size:1.7rem;color:var(--c);line-height:1;}
+.stile .sl{font-size:0.65rem;font-weight:800;color:var(--mt);margin-top:4px;text-transform:uppercase;letter-spacing:.5px;}
+
+/* ── JACKPOT TAB DRAW CARDS ── */
+.draw-hero{background:linear-gradient(135deg,var(--night) 0%,var(--night2) 100%);border-radius:20px;padding:24px 20px;margin-bottom:12px;text-align:center;color:#fff;}
+.draw-hero-label{font-size:0.7rem;font-weight:900;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:6px;}
+.draw-hero-title{font-family:'Fredoka One',cursive;font-size:1.6rem;color:#fff;margin-bottom:4px;}
+.draw-countdown{font-family:'Fredoka One',cursive;font-size:3rem;color:var(--u);line-height:1;margin:8px 0;}
+.draw-countdown-sub{font-size:0.75rem;font-weight:800;color:rgba(255,255,255,0.5);letter-spacing:1px;text-transform:uppercase;}
+
+.dc{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:18px;margin-bottom:10px;}
+.dh{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.dt{font-size:0.95rem;font-weight:900;}
+.dbadge{font-size:0.65rem;font-weight:800;padding:4px 10px;border-radius:99px;}
+.dbadge.locked{background:var(--bd);color:var(--mt);}
+.dbadge.open{background:var(--llt);color:var(--ldk);}
+.dbadge.waiting{background:var(--slt);color:var(--sdk);}
+.dbadge.hit{background:var(--llt);color:var(--ldk);}
+.dbadge.miss{background:var(--bd);color:var(--mt);}
+
+.draw-slot{display:flex;justify-content:center;gap:10px;margin:10px 0;}
+.draw-digit{width:56px;height:68px;background:var(--night);border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'Fredoka One',cursive;font-size:2.2rem;color:#fff;position:relative;overflow:hidden;}
+.draw-digit.rolling{animation:roll .08s steps(1) infinite;}
+.draw-digit.revealed{animation:none;color:var(--u);}
+.draw-digit.empty{background:var(--bg);color:var(--bd);font-size:1.5rem;}
+@keyframes roll{0%{transform:translateY(-4px);}50%{transform:translateY(4px);}100%{transform:translateY(-4px);}}
+
+.dsub{font-size:0.75rem;font-weight:800;color:var(--mt);text-align:center;margin-bottom:10px;}
+.dinp{display:flex;gap:8px;margin-bottom:8px;}
+.dinp input{flex:1;background:var(--bg);border:2px solid var(--bd);border-radius:12px;padding:12px;font-family:'Fredoka One',cursive;font-size:1.5rem;text-align:center;color:var(--tx);outline:none;min-width:0;}
+.dinp input:focus{border-color:var(--g);}
+.dinp button{padding:0 16px;background:var(--g);border:none;border-radius:12px;color:#fff;font-family:'Nunito',sans-serif;font-weight:900;font-size:0.9rem;cursor:pointer;white-space:nowrap;}
+
+.cta-banner{display:flex;align-items:center;justify-content:space-between;background:var(--clt);border:1.5px solid var(--c);border-radius:14px;padding:16px;margin-bottom:12px;}
+.cta-text h3{font-family:'Fredoka One',cursive;font-size:1.1rem;color:var(--c);}
+.cta-text p{font-size:0.75rem;font-weight:700;color:var(--mt);margin-top:2px;}
+
+/* ── PLAY TAB ── */
+.gbar{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.gbar-lbl{font-size:0.7rem;font-weight:900;color:var(--mt);text-transform:uppercase;letter-spacing:1px;white-space:nowrap;}
+.gdots{display:flex;gap:5px;}
+.gdot{width:28px;height:28px;border-radius:50%;background:var(--bg);border:2px solid var(--bd);display:flex;align-items:center;justify-content:center;font-size:0.62rem;font-weight:900;color:var(--mt);}
+.gdot.win{background:var(--llt);border-color:var(--l);color:var(--ldk);}
+.gdot.loss{background:var(--clt);border-color:var(--c);color:var(--cdk);}
+.gdot.active{border-color:var(--s);background:var(--slt);color:var(--sdk);}
+.practice-badge{font-size:0.65rem;font-weight:900;background:var(--glt);color:var(--gdk);padding:3px 10px;border-radius:99px;margin-left:auto;}
+
+/* Mode selector */
+
+/* Wordle board */
+.wordle-grid{display:flex;flex-direction:column;gap:6px;align-items:center;margin:14px 0;}
+.wordle-row{display:flex;gap:6px;}
+.wordle-cell{width:60px;height:60px;border:2.5px solid var(--bd);border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'Fredoka One',cursive;font-size:1.7rem;transition:all .2s;background:var(--bg);color:var(--tx);}
+.wordle-cell.filled{border-color:var(--s);background:var(--slt);animation:bounce .15s ease;}
+.wordle-cell.correct{background:var(--wg);border-color:var(--wg);color:#fff;}
+.wordle-cell.present{background:var(--wy);border-color:var(--wy);color:#fff;}
+.wordle-cell.wrong{background:var(--wgr);border-color:var(--wgr);color:#fff;opacity:.9;}
+@keyframes bounce{0%{transform:scale(1);}50%{transform:scale(1.12);}100%{transform:scale(1);}}
+
+/* Number keypad */
+.w-keyboard{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;max-width:340px;margin:12px auto 4px;}
+.key-btn{background:var(--bg);border:1.5px solid var(--bd);border-radius:12px;padding:15px 0;font-family:'Fredoka One',cursive;font-size:1.25rem;color:var(--tx);cursor:pointer;text-align:center;transition:all .12s;user-select:none;-webkit-tap-highlight-color:transparent;}
+.key-btn:active{transform:scale(0.92);}
+.key-btn.correct{background:var(--wg);color:#fff;border-color:var(--wg);}
+.key-btn.present{background:var(--wy);color:#fff;border-color:var(--wy);}
+.key-btn.wrong{background:var(--wgr);color:#fff;border-color:var(--wgr);opacity:.6;}
+.keyboard-actions{display:flex;gap:8px;max-width:340px;margin:8px auto;}
+.action-btn{flex:1;padding:15px;font-family:'Nunito',sans-serif;font-weight:900;font-size:0.95rem;border-radius:12px;border:none;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.action-btn.del{background:var(--bg);border:1.5px solid var(--bd);color:var(--mt);}
+.action-btn.ent{background:var(--c);color:#fff;}
+
+
+/* Shared game results */
+.gmsg{font-size:0.9rem;font-weight:900;text-align:center;min-height:1.1em;margin:5px 0;color:var(--mt);}
+.res-box{border-radius:16px;padding:18px;margin:12px 0;text-align:center;}
+.res-box.win{background:var(--llt);border:2px solid var(--l);}
+.res-box.lose{background:var(--clt);border:2px solid var(--c);}
+.res-em{font-size:2.2rem;display:block;margin-bottom:3px;}
+.res-t{font-family:'Fredoka One',cursive;font-size:1.5rem;}
+.res-s{font-size:0.82rem;font-weight:800;color:var(--mt);margin-top:4px;}
+.jbanner{background:var(--night);border-radius:14px;padding:16px;text-align:center;margin-top:8px;}
+.jbanner .jt{font-family:'Fredoka One',cursive;font-size:1.2rem;color:var(--u);}
+
+/* Leaderboard */
+.lb-tabs{display:flex;gap:4px;margin-bottom:12px;background:var(--bg);border-radius:99px;padding:4px;}
+.lb-tab{flex:1;padding:9px 4px;background:transparent;border:none;border-radius:99px;color:var(--mt);font-family:'Nunito',sans-serif;font-size:0.78rem;font-weight:800;cursor:pointer;text-align:center;}
+.lb-tab.on{background:var(--card);color:var(--c);}
+.lbrow{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:.5px solid var(--bd);}
+.lbrow:last-child{border-bottom:none;}
+.lbrn{font-family:'Fredoka One',cursive;font-size:1.2rem;width:28px;text-align:center;flex-shrink:0;}
+.lbinfo{flex:1;min-width:0;}
+.lbn{font-weight:900;font-size:0.92rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.lbn.me{color:var(--c);}
+.lbsub{font-size:0.68rem;font-weight:800;color:var(--mt);}
+.lbpts{font-family:'Fredoka One',cursive;font-size:1.1rem;color:var(--c);flex-shrink:0;}
+
+/* Rules */
+.sc-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px dashed var(--bd);font-size:0.88rem;font-weight:700;}
+.sc-row:last-child{border-bottom:none;}
+.scv{font-weight:900;color:var(--ldk);}
+.rule-step{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;}
+.rnum{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Fredoka One',cursive;font-size:1rem;flex-shrink:0;}
+.rnum.a{background:var(--clt);color:var(--cdk);}
+.rnum.b{background:var(--slt);color:var(--sdk);}
+.rnum.c{background:var(--llt);color:var(--ldk);}
+.rnum.d{background:var(--ult);color:var(--udk);}
+.rnum.e{background:var(--glt);color:var(--gdk);}
+.rb h4{font-size:0.88rem;font-weight:900;margin-bottom:2px;}
+.rb p{font-size:0.78rem;font-weight:700;color:var(--mt);line-height:1.5;}
+
+/* Streak */
+.streak-pill{display:inline-flex;align-items:center;gap:5px;background:var(--ult);border:1.5px solid var(--u);border-radius:99px;padding:4px 12px;font-size:0.78rem;font-weight:900;color:var(--udk);margin-bottom:10px;}
+
+/* Practice mode banner */
+.practice-section{background:var(--glt);border:1.5px solid var(--l);border-radius:16px;padding:18px;margin-bottom:12px;text-align:center;}
+.practice-section h3{font-family:'Fredoka One',cursive;font-size:1.1rem;color:var(--ldk);margin-bottom:4px;}
+.practice-section p{font-size:0.78rem;font-weight:700;color:var(--mt);line-height:1.4;}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HEADER -->
+  <header class="hdr">
+    <div class="hdr-row">
+      <div class="logo-box">🎯</div>
+      <div class="logo-txt">Happy<em>Nums</em></div>
+      <button class="hdr-logout" id="hdr-logout" onclick="logout()" style="display:none;">Exit</button>
+    </div>
+
+    <nav class="hdr-nav" id="main-nav" style="display:none;">
+      <button class="nb" onclick="sw('jackpot',this);renderJackpot();" id="nb-jackpot">
+        <span class="nb-icon">🎰</span><span>Jackpot</span>
+      </button>
+      <button class="nb on" onclick="sw('play',this);initPlay();" id="nb-play">
+        <span class="nb-icon">🎯</span><span>Play</span>
+      </button>
+      <button class="nb" onclick="sw('lb',this);renderLB('daily');" id="nb-lb">
+        <span class="nb-icon">🏆</span><span>Board</span>
+      </button>
+      <button class="nb" onclick="sw('rules',this)" id="nb-rules">
+        <span class="nb-icon">📖</span><span>Rules</span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- AUTH -->
+  <div id="auth-wrap" class="pad">
+    <div style="text-align:center;padding:20px 0 10px;">
+      <div style="font-family:'Fredoka One',cursive;font-size:1.1rem;color:var(--mt);letter-spacing:1px;">GUESS · PREDICT · WIN</div>
+    </div>
+    <div class="card" id="lcard">
+      <span class="slabel">Welcome back!</span>
+      <div class="ff"><label>Username</label><input type="text" id="li-u" placeholder="your_username" autocomplete="off"/></div>
+      <div class="ff"><label>Password</label><input type="password" id="li-p" placeholder="••••••••"/></div>
+      <button class="btn coral" onclick="doLogin()">Let's play!</button>
+      <p class="xm" id="li-m"></p>
+      <button class="tlink" onclick="tog()">New here? Create a free account →</button>
+    </div>
+    <div class="card" id="rcard" style="display:none;">
+      <span class="slabel">Join for free!</span>
+      <div class="ff"><label>Username</label><input type="text" id="re-u" placeholder="something fun..." autocomplete="off"/></div>
+      <div class="ff"><label>Password</label><input type="password" id="re-p" placeholder="min. 6 characters"/></div>
+      <button class="btn lime" onclick="doReg()">Create account & play!</button>
+      <p class="xm" id="re-m"></p>
+      <button class="tlink" onclick="tog()">← Already have an account</button>
+    </div>
+  </div>
+
+  <!-- APP -->
+  <div id="app-wrap" style="display:none;">
+
+    <!-- JACKPOT TAB -->
+    <div id="tab-jackpot" class="screen">
+      <div class="pad">
+        <!-- User bar -->
+        <div class="ubar">
+          <div class="av" id="u-av2"></div>
+          <div class="ubar-info"><div class="uname" id="u-nm2"></div><div class="urk" id="u-rk2"></div></div>
+          <div class="uscore"><div class="sl">All-time</div><div class="sv" id="u-sc2">0</div></div>
+        </div>
+        <!-- Countdown hero -->
+        <div class="draw-hero">
+          <div class="draw-hero-label">Next draw in</div>
+          <div class="draw-countdown" id="main-countdown">--:--:--</div>
+          <div class="draw-countdown-sub" id="next-draw-label">Loading…</div>
+        </div>
+        <!-- CTA or status -->
+        <div id="jackpot-cta"></div>
+        <!-- Draw cards -->
+        <div id="draws-area"></div>
+      </div>
+    </div>
+
+    <!-- PLAY TAB -->
+    <div id="tab-play" class="screen on">
+      <div class="pad">
+        <div class="ubar">
+          <div class="av" id="u-av"></div>
+          <div class="ubar-info"><div class="uname" id="u-nm"></div><div class="urk" id="u-rk"></div></div>
+          <div class="uscore"><div class="sl">All-time</div><div class="sv" id="u-sc">0</div></div>
+        </div>
+
+        <div class="gbar">
+          <span class="gbar-lbl" id="gbar-lbl">Current Shift</span>
+          <div class="gdots" id="gdots"></div>
+          <span id="gleft" style="font-size:0.7rem;font-weight:900;color:var(--mt);margin-left:auto;"></span>
+          <span class="practice-badge" id="practice-badge" style="display:none;">Practice</span>
+        </div>
+
+
+        <!-- Game card -->
+        <div class="card" id="game-card">
+          <div style="text-align:center;margin-bottom:8px;">
+            <span style="background:var(--slt);color:var(--sdk);font-size:0.72rem;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;padding:5px 14px;border-radius:99px;" id="g-pill">Game 1 of 5</span>
+          </div>
+          <div id="sk-area" style="text-align:center;"></div>
+
+          <!-- Wordle UI -->
+          <div id="wordle-ui">
+            <div class="wordle-grid" id="w-board"></div>
+            <div class="keyboard-actions">
+              <button class="action-btn del" onclick="pressKey('DEL')">⌫ Delete</button>
+              <button class="action-btn ent" onclick="pressKey('ENTER')">Submit</button>
+            </div>
+            <div class="w-keyboard" id="w-keys">
+              <button class="key-btn" onclick="pressKey('1')">1</button>
+              <button class="key-btn" onclick="pressKey('2')">2</button>
+              <button class="key-btn" onclick="pressKey('3')">3</button>
+              <button class="key-btn" onclick="pressKey('4')">4</button>
+              <button class="key-btn" onclick="pressKey('5')">5</button>
+              <button class="key-btn" onclick="pressKey('6')">6</button>
+              <button class="key-btn" onclick="pressKey('7')">7</button>
+              <button class="key-btn" onclick="pressKey('8')">8</button>
+              <button class="key-btn" onclick="pressKey('9')">9</button>
+              <button class="key-btn" onclick="pressKey('0')">0</button>
+            </div>
+          </div>
+
+
+          <p class="gmsg" id="gm"></p>
+          <div id="res"></div>
+        </div>
+
+        <!-- Session done card -->
+        <div class="card" id="done-card" style="display:none;">
+          <span class="slabel">Shift Qualifier done!</span>
+          <div id="sess-sum"></div>
+          <button class="btn grape" onclick="sw('jackpot',document.getElementById('nb-jackpot'));renderJackpot();" style="margin-top:10px;">🎰 Enter your draw picks</button>
+        </div>
+
+        <!-- Infinite practice card (shown after shift done) -->
+        <div class="practice-section" id="practice-card" style="display:none;">
+          <h3>♾️ Infinite Practice Mode</h3>
+          <p>Shift is complete! Keep playing for fun and +10 pts per win. No pressure — just vibes.</p>
+          <button class="btn lime" onclick="startPractice()" style="margin-top:12px;">Start Practice Game</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEADERBOARD TAB -->
+    <div id="tab-lb" class="screen">
+      <div class="pad">
+        <div class="card">
+          <div class="lb-tabs">
+            <button class="lb-tab on" onclick="switchLB('daily',this)">Daily</button>
+            <button class="lb-tab" onclick="switchLB('alltime',this)">All-time</button>
+          </div>
+          <div id="lb-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RULES TAB -->
+    <div id="tab-rules" class="screen">
+      <div class="pad">
+        <div class="card">
+          <span class="slabel">How to play</span>
+          <div class="rule-step">
+            <div class="rnum a">1</div>
+            <div class="rb"><h4>Play 5 Qualifier Games per shift</h4><p>Each 8-hour shift gives you 5 Codebreaker games to climb the leaderboard.</p></div>
+          </div>
+          <div class="rule-step">
+            <div class="rnum b">2</div>
+            <div class="rb"><h4>Codebreaker mode</h4><p>Guess the 3-digit code in 5 tries. Green = right digit, right spot. Yellow = right digit, wrong spot. Grey = not in code.</p></div>
+          </div>
+          <div class="rule-step">
+            <div class="rnum c">3</div>
+            <div class="rb"><h4>Unlock the jackpot draw</h4><p>After 5 qualifier games, pick a 3-digit number for the next draw (08:00, 16:00, 00:00). Exact match = +5000 pts jackpot!</p></div>
+          </div>
+          <div class="rule-step" style="margin-bottom:0;">
+            <div class="rnum d">4</div>
+            <div class="rb"><h4>Infinite Practice Mode</h4><p>After a shift, keep playing for +10 pts per win. Great for grinding the leaderboard!</p></div>
+          </div>
+        </div>
+        <div class="card">
+          <span class="slabel">Codebreaker scoring</span>
+          <div class="sc-row"><span>Solved in 1 try</span><span class="scv">+1000 pts</span></div>
+          <div class="sc-row"><span>Solved in 2 tries</span><span class="scv">+500 pts</span></div>
+          <div class="sc-row"><span>Solved in 3 tries</span><span class="scv">+250 pts</span></div>
+          <div class="sc-row"><span>Solved in 4 tries</span><span class="scv">+100 pts</span></div>
+          <div class="sc-row"><span>Solved in 5 tries</span><span class="scv">+50 pts</span></div>
+          <div class="sc-row" style="border-bottom:none;border-top:2px solid var(--glt);padding-top:10px;margin-top:4px;"><span style="font-weight:900;">Jackpot draw hit</span><span class="scv" style="font-size:1rem;color:var(--gdk);">+5000 pts</span></div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /app-wrap -->
+</div><!-- /app -->
+
+<script>
+// ─── CONSTANTS ───────────────────────────────────────────────────────────────
+const W_BONUS=[1000,500,250,100,50];
+const MAX_W_TRIES=5, MAX_GAMES=5;
+const DRAWS=[
+  {id:'d8', label:'08:00 Morning Draw', hour:8},
+  {id:'d16',label:'16:00 Noon Draw',    hour:16},
+  {id:'d0', label:'00:00 Night Draw',   hour:0}
+];
+const AVC=['#E8405A','#3B9EFF','#2ECC71','#7B5EA7','#F5A623','#20C9C9','#FF8C42'];
+const AVT=['#fff','#fff','#fff','#fff','#7a5000','#fff','#fff'];
+const RANKS=[{m:0,l:'Newcomer',e:'🌱'},{m:500,l:'Guesser',e:'🎯'},{m:1500,l:'Sharp Eye',e:'👁️'},{m:3000,l:'Hot Shot',e:'🔥'},{m:7000,l:'Legend',e:'🌟'},{m:15000,l:'Champion',e:'👑'}];
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let U={}, cu=null, gs=null;
+let isPractice=false;
+let wBuffer='';
+
+
+// ─── PERSISTENCE ─────────────────────────────────────────────────────────────
+try{const d=localStorage.getItem('hn_v9');if(d)U=JSON.parse(d);}catch(e){}
+function save(){try{localStorage.setItem('hn_v9',JSON.stringify(U));}catch(e){}}
+function gu(){return U[cu];}
+function avi(n){let h=0;for(const c of n)h=(h*31+c.charCodeAt(0))&0xff;return h%AVC.length;}
+function getRank(s){let r=RANKS[0];for(const k of RANKS)if(s>=k.m)r=k;return r;}
+
+// ─── DATE / SHIFT HELPERS ────────────────────────────────────────────────────
+function today(){return new Date().toISOString().slice(0,10);}
+function weekKey(){const d=new Date(),dy=d.getDay()||7;d.setDate(d.getDate()-dy+1);return 'w'+d.toISOString().slice(0,10);}
+
+function getActiveShiftId(){
+  const h=new Date().getHours();
+  if(h>=0&&h<8)return 'd8';
+  if(h>=8&&h<16)return 'd16';
+  return 'd0';
+}
+
+function nextDrawDate(id){
+  const now=new Date();
+  const t=new Date(now);
+  const hr=id==='d8'?8:id==='d16'?16:24;
+  t.setHours(hr,0,0,0);
+  if(t<=now)t.setDate(t.getDate()+1);
+  return t;
+}
+
+function msToHMS(ms){
+  if(ms<0)ms=0;
+  const s=Math.floor(ms/1000);
+  const hh=String(Math.floor(s/3600)).padStart(2,'0');
+  const mm=String(Math.floor((s%3600)/60)).padStart(2,'0');
+  const ss=String(s%60).padStart(2,'0');
+  return `${hh}:${mm}:${ss}`;
+}
+
+function getNextDraw(){
+  const times=DRAWS.map(d=>({...d,ms:nextDrawDate(d.id)-new Date()}));
+  return times.sort((a,b)=>a.ms-b.ms)[0];
+}
+
+// ─── AUTH ─────────────────────────────────────────────────────────────────────
+function tog(){
+  const l=document.getElementById('lcard'),r=document.getElementById('rcard');
+  l.style.display=l.style.display==='none'?'':'none';
+  r.style.display=r.style.display==='none'?'':'none';
+}
+
+function doReg(){
+  const u=document.getElementById('re-u').value.trim();
+  const p=document.getElementById('re-p').value;
+  const m=document.getElementById('re-m');
+  if(u.length<3){m.textContent='Username needs 3+ characters';m.className='xm err';return;}
+  if(p.length<6){m.textContent='Password needs 6+ characters';m.className='xm err';return;}
+  if(U[u.toLowerCase()]){m.textContent='Username already taken!';m.className='xm err';return;}
+  U[u.toLowerCase()]={username:u,password:p,alltime:0,daily:{},weekly:{},wins:0,drawHits:0,streak:0,best:0,days:{}};
+  save();cu=u.toLowerCase();
+  m.textContent='Account created!';m.className='xm ok';
+  setTimeout(enterApp,400);
+}
+
+function doLogin(){
+  const u=document.getElementById('li-u').value.trim().toLowerCase();
+  const p=document.getElementById('li-p').value;
+  const m=document.getElementById('li-m');
+  if(!U[u]||U[u].password!==p){m.textContent='Wrong username or password';m.className='xm err';return;}
+  cu=u;enterApp();
+}
+
+function logout(){
+  cu=null;gs=null;
+  clearInterval(window._drawTimer);
+  window._drawTimer=null;
+  document.getElementById('app-wrap').style.display='none';
+  document.getElementById('auth-wrap').style.display='block';
+  document.getElementById('main-nav').style.display='none';
+  document.getElementById('hdr-logout').style.display='none';
+  document.getElementById('li-u').value='';
+  document.getElementById('li-p').value='';
+  document.getElementById('li-m').textContent='';
+}
+
+function enterApp(){
+  document.getElementById('auth-wrap').style.display='none';
+  document.getElementById('app-wrap').style.display='block';
+  document.getElementById('main-nav').style.display='flex';
+  document.getElementById('hdr-logout').style.display='inline-block';
+  ensureDay();updBar();initPlay();
+  renderJackpot();
+  if(!window._drawTimer)window._drawTimer=setInterval(tickTimers,1000);
+}
+
+// ─── DATA INIT ────────────────────────────────────────────────────────────────
+function ensureDay(){
+  const u=gu(),d=today();
+  if(!u.days)u.days={};
+  if(!u.daily)u.daily={};
+  if(!u.weekly)u.weekly={};
+  if(!u.days[d]){
+    u.days[d]={
+      d8_games:[],d16_games:[],d0_games:[],
+      draws:{
+        d8:{pick:null,result:null,hit:false,revealed:false},
+        d16:{pick:null,result:null,hit:false,revealed:false},
+        d0:{pick:null,result:null,hit:false,revealed:false}
+      }
+    };
+  }
+  save();
+}
+
+function getDay(){return gu().days[today()];}
+function getShiftGames(id){const d=getDay();return d[id+'_games']||[];}
+function addScore(pts){
+  const u=gu(),d=today(),wk=weekKey();
+  u.alltime=(u.alltime||0)+pts;
+  u.daily[d]=(u.daily[d]||0)+pts;
+  u.weekly[wk]=(u.weekly[wk]||0)+pts;
+}
+
+// ─── UI HELPERS ───────────────────────────────────────────────────────────────
+function sw(id,btn){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('tab-'+id).classList.add('on');
+  if(btn)btn.classList.add('on');
+}
+
+function updBar(){
+  const u=gu();if(!u)return;
+  const i=avi(u.username);
+  const rk=getRank(u.alltime||0);
+  ['','2'].forEach(sfx=>{
+    const av=document.getElementById('u-av'+sfx);
+    const nm=document.getElementById('u-nm'+sfx);
+    const rkEl=document.getElementById('u-rk'+sfx);
+    const sc=document.getElementById('u-sc'+sfx);
+    if(!av)return;
+    av.textContent=u.username.slice(0,2).toUpperCase();
+    av.style.background=AVC[i];av.style.color=AVT[i];
+    if(nm)nm.textContent=u.username;
+    if(rkEl)rkEl.textContent=rk.e+' '+rk.l;
+    if(sc)sc.textContent=u.alltime||0;
+  });
+}
+
+// ─── JACKPOT TAB ──────────────────────────────────────────────────────────────
+// (tickTimers + auto-reveal live in the TIMER TICK section near the bottom.)
+
+function renderJackpot(){
+  updBar();
+  const day=getDay();
+  const activeShift=getActiveShiftId();
+  const shiftGames=getShiftGames(activeShift);
+  const unlocked=shiftGames.length>=MAX_GAMES;
+
+  // CTA banner
+  const ctaEl=document.getElementById('jackpot-cta');
+  if(!unlocked){
+    const remaining=MAX_GAMES-shiftGames.length;
+    ctaEl.innerHTML=`
+      <div class="cta-banner">
+        <div class="cta-text">
+          <h3>🎮 Play to unlock draws!</h3>
+          <p>${remaining} more game${remaining!==1?'s':''} needed this shift</p>
+        </div>
+        <button class="btn coral sm" onclick="sw('play',document.getElementById('nb-play'));initPlay();">Play Now</button>
+      </div>`;
+  } else {
+    const allLocked=DRAWS.every(dr=>day.draws[dr.id].pick!==null);
+    if(allLocked){
+      ctaEl.innerHTML=`<div style="text-align:center;padding:8px 0 4px;font-size:0.82rem;font-weight:800;color:var(--ldk);">✅ All draw picks submitted! Good luck!</div>`;
+    } else {
+      ctaEl.innerHTML=`<div style="text-align:center;padding:8px 0 4px;font-size:0.82rem;font-weight:800;color:var(--sdk);">🎰 Draws unlocked — submit your picks below!</div>`;
+    }
+  }
+
+  // Draw cards
+  let html='';
+  DRAWS.forEach(dr=>{
+    const d=day.draws[dr.id];
+    const shiftUnlocked=getShiftGames(dr.id).length>=MAX_GAMES;
+    let badge,slotHtml,subTxt,inputHtml='',resultHtml='';
+
+    if(d.result!==null){
+      // Draw revealed
+      const resStr=String(d.result).padStart(3,'0');
+      badge=`<span class="dbadge ${d.hit?'hit':'miss'}">${d.hit?'Jackpot!':'Done'}</span>`;
+      slotHtml=`<div class="draw-slot" id="slot-${dr.id}">
+        ${resStr.split('').map(digit=>`<div class="draw-digit revealed">${digit}</div>`).join('')}
+      </div>`;
+      subTxt=`Your pick: ${String(d.pick).padStart(3,'0')} · Result: ${resStr}`;
+      if(d.hit)resultHtml=`<div class="jbanner"><div class="jt">🎉 Jackpot! +5000 pts!</div></div>`;
+      else resultHtml=`<p style="font-size:0.75rem;font-weight:800;color:var(--mt);text-align:center;margin-top:6px;">Not this time — try the next draw!</p>`;
+    } else if(d.pick!==null){
+      badge=`<span class="dbadge waiting">Locked in</span>`;
+      slotHtml=`<div class="draw-slot" id="slot-${dr.id}">
+        ${String(d.pick).padStart(3,'0').split('').map(digit=>`<div class="draw-digit" style="color:var(--u);">${digit}</div>`).join('')}
+      </div>`;
+      subTxt='Your number is locked in!';
+    } else if(shiftUnlocked){
+      badge=`<span class="dbadge open">Open!</span>`;
+      slotHtml=`<div class="draw-slot" id="slot-${dr.id}">
+        <div class="draw-digit empty">?</div>
+        <div class="draw-digit empty">?</div>
+        <div class="draw-digit empty">?</div>
+      </div>`;
+      subTxt='Pick your lucky 3-digit number';
+      inputHtml=`<div class="dinp"><input type="number" id="inp-${dr.id}" placeholder="000" min="0" max="999"/><button onclick="submitDraw('${dr.id}')">Lock in!</button></div>`;
+    } else {
+      const gPlayed=getShiftGames(dr.id).length;
+      badge=`<span class="dbadge locked">Locked</span>`;
+      slotHtml=`<div class="draw-slot" id="slot-${dr.id}">
+        <div class="draw-digit empty">?</div>
+        <div class="draw-digit empty">?</div>
+        <div class="draw-digit empty">?</div>
+      </div>`;
+      subTxt=`Finish shift games to unlock (${gPlayed}/5)`;
+    }
+
+    html+=`<div class="dc">
+      <div class="dh"><span class="dt">${dr.label}</span>${badge}</div>
+      ${slotHtml}
+      <p class="dsub">${subTxt}</p>
+      ${inputHtml}
+      ${resultHtml}
+      <p style="font-size:0.72rem;font-weight:800;color:var(--sdk);text-align:center;margin-top:6px;" id="timer-${dr.id}"></p>
+    </div>`;
+  });
+  document.getElementById('draws-area').innerHTML=html;
+  updateTimerLabels();
+}
+
+function updateTimerLabels(){
+  DRAWS.forEach(dr=>{
+    const el=document.getElementById('timer-'+dr.id);
+    if(el){
+      const day=getDay();
+      if(day.draws[dr.id].result===null){
+        el.textContent='Draw in '+msToHMS(nextDrawDate(dr.id)-new Date());
+      } else {
+        el.textContent='';
+      }
+    }
+  });
+}
+
+function submitDraw(id){
+  const inp=document.getElementById('inp-'+id);
+  if(!inp)return;
+  const v=parseInt(inp.value);
+  if(isNaN(v)||v<0||v>999){alert('Enter a number between 0 and 999!');return;}
+  getDay().draws[id].pick=v;
+  save();renderJackpot();
+}
+
+// ─── PLAY TAB INIT ────────────────────────────────────────────────────────────
+function initPlay(){
+  isPractice=false;
+  document.getElementById('practice-badge').style.display='none';
+  document.getElementById('practice-card').style.display='none';
+  const sid=getActiveShiftId();
+  const arr=getShiftGames(sid);
+
+  // Update shift label
+  const labels={d8:'08:00 Shift',d16:'16:00 Shift',d0:'00:00 Shift'};
+  document.getElementById('gbar-lbl').textContent=labels[sid]||'Current Shift';
+
+  renderGdots(arr);
+  updBar();
+
+  if(arr.length>=MAX_GAMES){
+    // Shift done
+    document.getElementById('game-card').style.display='none';
+    document.getElementById('done-card').style.display='block';
+    document.getElementById('practice-card').style.display='block';
+    renderSessSummary(arr);
+    gs=null;
+    return;
+  }
+
+  document.getElementById('game-card').style.display='block';
+  document.getElementById('done-card').style.display='none';
+  document.getElementById('practice-card').style.display='none';
+
+  if(!gs){
+    startNewGame();
+  }
+}
+
+function startPractice(){
+  isPractice=true;
+  document.getElementById('practice-badge').style.display='inline-flex';
+  document.getElementById('practice-card').style.display='none';
+  document.getElementById('done-card').style.display='none';
+  document.getElementById('game-card').style.display='block';
+  startNewGame();
+}
+
+function startNewGame(){
+  gs=null;wBuffer='';
+  document.getElementById('gm').textContent='';
+  document.getElementById('res').innerHTML='';
+  document.getElementById('sk-area').innerHTML='';
+
+  const sid=getActiveShiftId();
+  const arr=isPractice?[]:getShiftGames(sid);
+  const gnum=arr.length+1;
+  const maxG=isPractice?'∞':MAX_GAMES;
+  document.getElementById('g-pill').textContent=`Game ${gnum} of ${maxG} · 🧩 Codebreaker`;
+
+  startWordleGame();
+  renderGdots(arr);
+}
+
+
+function renderGdots(arr){
+  let h='';
+  const n=isPractice?arr.length:MAX_GAMES;
+  if(!isPractice){
+    for(let i=0;i<n;i++){
+      if(i<arr.length)h+=`<div class="gdot ${arr[i].won?'win':'loss'}">${arr[i].won?'✓':'✗'}</div>`;
+      else if(i===arr.length)h+=`<div class="gdot active">${i+1}</div>`;
+      else h+=`<div class="gdot">${i+1}</div>`;
+    }
+  }
+  document.getElementById('gdots').innerHTML=h;
+  const rem=isPractice?'∞':Math.max(0,MAX_GAMES-arr.length)+' left';
+  document.getElementById('gleft').textContent=rem;
+}
+
+function renderSessSummary(arr){
+  const wins=arr.filter(g=>g.won).length;
+  const pts=arr.reduce((a,g)=>a+(g.pts||0),0);
+  document.getElementById('sess-sum').innerHTML=`
+    <div class="g2" style="margin-bottom:0;">
+      <div class="stile"><div class="sv">${wins}/${MAX_GAMES}</div><div class="sl">Won</div></div>
+      <div class="stile"><div class="sv">+${pts}</div><div class="sl">Points</div></div>
+    </div>`;
+}
+
+// ─── WORDLE MODE ──────────────────────────────────────────────────────────────
+function startWordleGame(){
+  const target=String(Math.floor(Math.random()*1000)).padStart(3,'0');
+  gs={mode:'wordle',target,tries:[],done:false};
+  wBuffer='';
+  document.getElementById('wordle-ui').style.display='block';
+
+  document.querySelectorAll('#w-keys .key-btn').forEach(k=>{k.className='key-btn';});
+  renderWordleBoard();
+}
+
+function renderWordleBoard(){
+  let html='';
+  for(let i=0;i<MAX_W_TRIES;i++){
+    html+='<div class="wordle-row">';
+    for(let j=0;j<3;j++){
+      let ch='',cls='';
+      if(i<gs.tries.length){
+        ch=gs.tries[i].guess[j];
+        cls=gs.tries[i].clues[j];
+      } else if(i===gs.tries.length){
+        if(j<wBuffer.length){ch=wBuffer[j];cls='filled';}
+      }
+      html+=`<div class="wordle-cell ${cls}">${ch}</div>`;
+    }
+    html+='</div>';
+  }
+  document.getElementById('w-board').innerHTML=html;
+}
+
+function pressKey(k){
+  if(!gs||gs.done||gs.mode!=='wordle')return;
+  if(k==='DEL'){
+    wBuffer=wBuffer.slice(0,-1);
+    renderWordleBoard();
+  } else if(k==='ENTER'){
+    if(wBuffer.length!==3){
+      flashMsg('Enter all 3 digits first!');return;
+    }
+    evaluateWordle(wBuffer);
+  } else if('0123456789'.includes(k)){
+    if(wBuffer.length<3){wBuffer+=k;renderWordleBoard();}
+  }
+}
+
+function evaluateWordle(guess){
+  const target=gs.target;
+  const clues=['wrong','wrong','wrong'];
+  const usedTarget=[false,false,false];
+  const usedGuess=[false,false,false];
+  // Pass 1: exact matches
+  for(let i=0;i<3;i++){
+    if(guess[i]===target[i]){clues[i]='correct';usedTarget[i]=true;usedGuess[i]=true;}
+  }
+  // Pass 2: present but wrong spot
+  for(let i=0;i<3;i++){
+    if(usedGuess[i])continue;
+    for(let j=0;j<3;j++){
+      if(!usedTarget[j]&&guess[i]===target[j]){
+        clues[i]='present';usedTarget[j]=true;break;
+      }
+    }
+  }
+  gs.tries.push({guess,clues});
+  wBuffer='';
+
+  // Update keypad colors (fix: use correct selector)
+  for(let i=0;i<3;i++){
+    const digit=guess[i],clue=clues[i];
+    document.querySelectorAll('#w-keys .key-btn').forEach(btn=>{
+      if(btn.textContent.trim()===digit){
+        // Priority: correct > present > wrong
+        if(!btn.classList.contains('correct')){
+          if(clue==='correct'){btn.className='key-btn correct';}
+          else if(clue==='present'&&!btn.classList.contains('present')){btn.className='key-btn present';}
+          else if(clue==='wrong'&&btn.className==='key-btn'){btn.className='key-btn wrong';}
+        }
+      }
+    });
+  }
+
+  renderWordleBoard();
+  const won=guess===target;
+  endWordleRound(won);
+}
+
+function endWordleRound(won){
+  const u=gu();
+  if(won){
+    const n=gs.tries.length;
+    const pts=isPractice?10:(W_BONUS[n-1]||25);
+    addScore(pts);u.wins=(u.wins||0)+1;u.streak=(u.streak||0)+1;u.best=Math.max(u.streak,u.best||0);
+    gs.done=true;
+    document.getElementById('res').innerHTML=`
+      <div class="res-box win">
+        <span class="res-em">${n===1?'🤯':'🎉'}</span>
+        <div class="res-t">${n===1?'Incredible!':'Solved!'}</div>
+        <div class="res-s">+${pts} pts · ${n} ${n===1?'try':'tries'}</div>
+      </div>
+      <button class="btn lime" onclick="finishGame(true,${pts})" style="margin-top:0;">Next ${isPractice?'Practice ':''}Game →</button>`;
+    if(u.streak>=2)document.getElementById('sk-area').innerHTML=`<div style="text-align:center;margin-bottom:8px;"><span class="streak-pill">🔥 ${u.streak} win streak!</span></div>`;
+  } else if(gs.tries.length>=MAX_W_TRIES){
+    u.streak=0;gs.done=true;
+    document.getElementById('res').innerHTML=`
+      <div class="res-box lose">
+        <span class="res-em">😅</span>
+        <div class="res-t">Out of tries!</div>
+        <div class="res-s">Code was <b>${gs.target}</b></div>
+      </div>
+      <button class="btn coral" onclick="finishGame(false,0)" style="margin-top:0;">Next ${isPractice?'Practice ':''}Game →</button>`;
+  } else {
+    flashMsg(`${MAX_W_TRIES-gs.tries.length} ${MAX_W_TRIES-gs.tries.length===1?'try':'tries'} left`);
+  }
+  save();updBar();
+}
+
+
+// ─── GAME FINISH ─────────────────────────────────────────────────────────────
+function finishGame(won,pts){
+  if(!isPractice){
+    const sid=getActiveShiftId();
+    getShiftGames(sid).push({won,pts,mode:'wordle'});
+  }
+  gs=null;save();
+
+  if(!isPractice){
+    const arr=getShiftGames(getActiveShiftId());
+    renderGdots(arr);
+    if(arr.length>=MAX_GAMES){
+      document.getElementById('game-card').style.display='none';
+      document.getElementById('done-card').style.display='block';
+      document.getElementById('practice-card').style.display='block';
+      renderSessSummary(arr);
+    } else {
+      startNewGame();
+    }
+  } else {
+    startPractice();
+  }
+}
+
+// ─── KEYBOARD HARDWARE SUPPORT ────────────────────────────────────────────────
+window.addEventListener('keydown',function(e){
+  if(!cu||!gs||gs.done)return;
+  const ae=document.activeElement;
+  const tag=ae&&ae.tagName;
+  if(tag==='INPUT'||tag==='TEXTAREA')return;
+  if(e.key>='0'&&e.key<='9'){pressKey(e.key);e.preventDefault();}
+  else if(e.key==='Backspace'||e.key==='Delete'){pressKey('DEL');e.preventDefault();}
+  else if(e.key==='Enter'){pressKey('ENTER');e.preventDefault();}
+});
+
+
+// ─── LEADERBOARD ─────────────────────────────────────────────────────────────
+function renderLB(period){
+  const all=Object.values(U).map(u=>{
+    let s=0;
+    if(period==='daily')s=(u.daily||{})[today()]||0;
+    else s=u.alltime||0;
+    return{n:u.username,s,w:u.wins||0,dh:u.drawHits||0,str:u.best||0,me:u.username.toLowerCase()===cu};
+  }).sort((a,b)=>b.s-a.s);
+  const tr=['🥇','🥈','🥉'];
+  const i=avi(cu||'');
+  document.getElementById('lb-list').innerHTML=all.length?all.map((p,idx)=>{
+    const ai=avi(p.n);
+    const rk=getRank(Object.values(U).find(u=>u.username.toLowerCase()===p.n.toLowerCase())?.alltime||0);
+    return `<div class="lbrow">
+      <div class="lbrn">${tr[idx]||idx+1}</div>
+      <div class="av" style="width:36px;height:36px;font-size:0.78rem;background:${AVC[ai]};color:${AVT[ai]};flex-shrink:0;">${p.n.slice(0,2).toUpperCase()}</div>
+      <div class="lbinfo">
+        <div class="lbn${p.me?' me':''}">${p.n}${p.me?' (you)':''}</div>
+        <div class="lbsub">${rk.e} ${rk.l} · ${p.w}W · ${p.dh} jackpots${p.str>1?' · 🔥'+p.str:''}</div>
+      </div>
+      <div class="lbpts">${p.s}</div>
+    </div>`;
+  }).join(''):'<p style="font-size:0.85rem;font-weight:700;color:var(--mt);text-align:center;padding:16px 0;">No scores yet.</p>';
+}
+
+function switchLB(period,btn){
+  document.querySelectorAll('.lb-tab').forEach(b=>b.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  renderLB(period);
+}
+
+// ─── MISC HELPERS ────────────────────────────────────────────────────────────
+function flashMsg(txt){
+  const el=document.getElementById('gm');
+  el.textContent=txt;
+  clearTimeout(el._t);
+  el._t=setTimeout(()=>{if(el.textContent===txt)el.textContent='';},2200);
+}
+
+// ─── TIMER TICK (drives countdown + draw check) ───────────────────────────────
+function tickTimers(){
+  const nd=getNextDraw();
+  const cdEl=document.getElementById('main-countdown');
+  const lbEl=document.getElementById('next-draw-label');
+  if(cdEl)cdEl.textContent=msToHMS(nd.ms);
+  if(lbEl)lbEl.textContent=nd.label.toUpperCase();
+  updateTimerLabels();
+
+  // Auto-reveal any draws whose scheduled time has passed (scans all stored days).
+  if(cu){
+    const u=gu();
+    const now=new Date();
+    const todayKey=today();
+    Object.keys(u.days||{}).forEach(dayKey=>{
+      const day=u.days[dayKey];
+      if(!day||!day.draws)return;
+      DRAWS.forEach(dr=>{
+        const d=day.draws[dr.id];
+        if(!d||d.pick===null||d.result!==null)return;
+        // Scheduled draw time = dayKey @ dr.hour (00:00 draw belongs to the NEXT calendar day at 00:00).
+        const [y,m,da]=dayKey.split('-').map(Number);
+        const sched=new Date(y,m-1,da,dr.hour,0,0,0);
+        if(dr.hour===0)sched.setDate(sched.getDate()+1); // 00:00 draw resolves at midnight starting next day
+        if(now<sched)return;
+        d.result=Math.floor(Math.random()*1000);
+        d.hit=(d.pick===d.result);
+        if(d.hit){addScore(5000);u.drawHits=(u.drawHits||0)+1;}
+        save();
+        // Trigger rolling-slot animation only if this draw belongs to the day currently rendered.
+        if(dayKey===todayKey){
+          const slot=document.getElementById('slot-'+dr.id);
+          if(slot){
+            const digits=slot.querySelectorAll('.draw-digit');
+            digits.forEach(dig=>dig.classList.add('rolling'));
+            const rs=String(d.result).padStart(3,'0');
+            [0,1,2].forEach(i=>{
+              setTimeout(()=>{
+                if(digits[i]){digits[i].textContent=rs[i];digits[i].classList.remove('rolling');digits[i].classList.add('revealed');}
+              },800+i*600);
+            });
+            setTimeout(renderJackpot,3000);
+          } else {
+            renderJackpot();
+          }
+        }
+        updBar();
+      });
+    });
+  }
+}
+
+// ─── EXPOSE GLOBALS ───────────────────────────────────────────────────────────
+window.tog=tog;window.doReg=doReg;window.doLogin=doLogin;window.logout=logout;
+window.sw=sw;window.initPlay=initPlay;window.startPractice=startPractice;
+window.pressKey=pressKey;window.finishGame=finishGame;
+window.submitDraw=submitDraw;window.renderJackpot=renderJackpot;
+window.renderLB=renderLB;window.switchLB=switchLB;
+
+</script>
+</body>
+</html>
